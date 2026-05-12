@@ -1,0 +1,49 @@
+template header
+conditions
+blocking_flags
+mentality
+priority
+description
+
+package com.ftn.sbnz.kjar.rules;
+
+import com.ftn.sbnz.model.TacticalAssistantInput;
+import com.ftn.sbnz.model.BasicTacticalSettings;
+import com.ftn.sbnz.model.Level1Facts;
+import com.ftn.sbnz.model.Level2Facts;
+
+template "Level 2 Choosing mentality"
+
+rule "2_mentality_@{mentality}_@{priority}"
+salience @{priority}
+
+when
+
+    $input : TacticalAssistantInput()
+
+    $facts : Level1Facts(
+        @{conditions}
+        @{blocking_flags}
+    )
+
+    not Level2Facts()
+
+then
+
+    Level2Facts level2 = new Level2Facts();
+
+    level2.setSelectedMentality(
+        BasicTacticalSettings.Mentality.@{mentality}
+    );
+
+    insert(level2);
+
+    System.out.println(
+        "[LEVEL 2] Mentality = @{mentality}"
+        + " (priority: @{priority})"
+        + " - @{description}"
+    );
+
+end
+
+end template

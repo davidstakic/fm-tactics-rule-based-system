@@ -1,0 +1,33 @@
+template header
+parameter
+operator
+value
+flag_name
+
+package com.ftn.sbnz.kjar.rules;
+
+import com.ftn.sbnz.model.TacticalAssistantInput;
+import com.ftn.sbnz.model.Level1Facts;
+
+template "Level 1 Facts"
+
+rule "1_@{flag_name}"
+salience 100
+
+when
+    $input : TacticalAssistantInput(
+        @{parameter} @{operator} @{value}
+    )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        set@{flag_name}(true)
+    };
+
+    System.out.println("[LEVEL 1] @{flag_name} = true");
+
+end
+
+end template
