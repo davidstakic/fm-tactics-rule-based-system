@@ -1,34 +1,29 @@
 package com.ftn.sbnz.model;
 
 public class Level1Facts {
-    // Relativna snaga tima
-    private Boolean isFavorite; // jačina_tima - jačina_protivnika > 0.8
-    private Boolean isUnderdog; // jačina_protivnika - jačina_tima > 0.8
-    private Boolean isEvenlyMatched; // apsolutna razlika ≤ 0.8
+    private Boolean isFavorite;
+    private Boolean isUnderdog;
+    private Boolean isEvenlyMatched;
 
-    // Forma tima
-    private Boolean hasGoodForm; // ≥ 3 pobede u poslednjih 5 mečeva
-    private Boolean hasBadForm; // ≤ 1 pobeda u poslednjih 5 mečeva
-    private Boolean hasNeutralForm; // 2 pobede u poslednjih 5 mečeva
+    private Boolean hasGoodForm;
+    private Boolean hasBadForm;
+    private Boolean hasNeutralForm;
 
-    // Taktička uigranost
-    private Boolean hasHighFitness; // ≥ 70%
-    private Boolean hasMediumFitness; // 40% - 69%
-    private Boolean hasLowFitness; // < 40%
+    private Boolean hasHighFitness;
+    private Boolean hasMediumFitness;
+    private Boolean hasLowFitness;
 
-    // Kontekstualne situacije meča
-    private Boolean isDifficultAwayMatch; // AUTSAJDER + Gost + Visoka važnost
-    private Boolean mustWin; // Kup + Visoka važnost
-    private Boolean hasDominantPosition; // FAVORIT + Domaćin
-    private Boolean canDrawMatch; // RAVNOPRAVAN + Liga + Srednja važnost
-    private Boolean isCautiousMatch; // AUTSAJDER + Visoka važnost
+    private Boolean isDifficultAwayMatch;
+    private Boolean mustWin;
+    private Boolean hasDominantPosition;
+    private Boolean canDrawMatch;
+    private Boolean isCautiousMatch;
 
-    // Karakteristike protivnika
-    private Boolean hasCounterOpportunity; // Protivnik: Spori odbrambeni ili Ranjivi po bokovima
-    private Boolean hasAerialOpportunity; // Protivnik: Loša skok igra
-    private Boolean hasShootingOpportunity; // Protivnik: Nesiguran golman
-    private Boolean isAggressiveOpponent; // AGRESIVAN_PROTIVNIK
-    private Boolean isPassiveOpponent; // PASIVAN_PROTIVNIK
+    private Boolean hasCounterOpportunity;
+    private Boolean hasAerialOpportunity;
+    private Boolean hasShootingOpportunity;
+    private Boolean isAggressiveOpponent;
+    private Boolean isPassiveOpponent;
 
     public Boolean getIsFavorite() {
         return isFavorite;
