@@ -1,0 +1,140 @@
+package com.ftn.sbnz.kjar.rules;
+
+import com.ftn.sbnz.model.TacticalAssistantInput;
+import com.ftn.sbnz.model.BasicTacticalSettings.Mentality;
+import com.ftn.sbnz.model.TeamProfile.MidfieldQuality;
+import com.ftn.sbnz.model.OpponentProfile.PlayingStyle;
+import com.ftn.sbnz.model.KeyTeamInstructions.PassingDirectness;
+import com.ftn.sbnz.model.Level1Facts;
+import com.ftn.sbnz.model.Level2Facts;
+import com.ftn.sbnz.model.Level3Facts;
+
+
+rule "Direct passing - low chemistry"
+    salience 100
+
+when
+    Level1Facts( 
+    hasLowFitness == true
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setPassingDirectness( PassingDirectness.DIRECT );
+    };
+
+end
+
+
+rule "Direct passing - aggressive possession opponent"
+    salience 95
+
+when
+    Level1Facts( 
+    isAggressiveOpponent == true
+     )
+
+    TacticalAssistantInput( 
+    opponentProfile.playingStyle == PlayingStyle.POSSESSION_BASED
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setPassingDirectness( PassingDirectness.DIRECT );
+    };
+
+end
+
+
+rule "Short passing - creative midfield and good chemistry"
+    salience 90
+
+when
+    TacticalAssistantInput( 
+    teamProfile.midfieldQuality == MidfieldQuality.CREATIVE
+     )
+
+    Level1Facts( 
+    hasHighFitness == true
+     )
+
+    Level2Facts( 
+    selectedMentality == Mentality.POSITIVE
+    ||
+    selectedMentality == Mentality.ATTACKING
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setPassingDirectness( PassingDirectness.SHORTER );
+    };
+
+end
+
+
+rule "Short passing - passive opponent"
+    salience 85
+
+when
+    Level1Facts( 
+    isPassiveOpponent == true
+     )
+
+    TacticalAssistantInput( 
+    teamProfile.midfieldQuality == MidfieldQuality.CREATIVE
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setPassingDirectness( PassingDirectness.SHORTER );
+    };
+
+end
+
+
+rule "Direct passing - counter opportunity and defensive mentality"
+    salience 92
+
+when
+    Level1Facts( 
+    hasCounterOpportunity == true
+     )
+
+    Level2Facts( 
+    selectedMentality == Mentality.DEFENSIVE
+    ||
+    selectedMentality == Mentality.CAUTIOUS
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setPassingDirectness( PassingDirectness.DIRECT );
+    };
+
+end
+
+
+rule "Default passing"
+    salience 1
+
+when
+    $facts : Level3Facts( 
+    passingDirectness == null
+     )
+
+then
+    modify($facts) {
+        setPassingDirectness( PassingDirectness.STANDARD );
+    };
+
+end

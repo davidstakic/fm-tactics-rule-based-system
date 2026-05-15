@@ -1,0 +1,138 @@
+package com.ftn.sbnz.kjar.rules;
+
+import com.ftn.sbnz.model.TacticalAssistantInput;
+import com.ftn.sbnz.model.BasicTacticalSettings.Mentality;
+import com.ftn.sbnz.model.KeyTeamInstructions.DefensiveLineHeight;
+import com.ftn.sbnz.model.Level1Facts;
+import com.ftn.sbnz.model.Level2Facts;
+import com.ftn.sbnz.model.Level3Facts;
+
+
+rule "Low defensive line - incapable"
+    salience 100
+
+when
+    TacticalAssistantInput( 
+    teamProfile.highLineCapability == false
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setDefensiveLineHeight( DefensiveLineHeight.LOW );
+    };
+
+end
+
+
+rule "High defensive line - attacking mentality"
+    salience 95
+
+when
+    TacticalAssistantInput( 
+    teamProfile.highLineCapability == true
+     )
+
+    Level2Facts( 
+    selectedMentality == Mentality.ATTACKING
+    ||
+    selectedMentality == Mentality.VERY_ATTACKING
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setDefensiveLineHeight( DefensiveLineHeight.HIGH );
+    };
+
+end
+
+
+rule "High defensive line - positive mentality without counter threat"
+    salience 94
+
+when
+    TacticalAssistantInput( 
+    teamProfile.highLineCapability == true
+     )
+
+    Level2Facts( 
+    selectedMentality == Mentality.POSITIVE
+     )
+
+    Level1Facts( 
+    hasCounterOpportunity == false
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setDefensiveLineHeight( DefensiveLineHeight.HIGH );
+    };
+
+end
+
+
+rule "Standard defensive line - counter threat"
+    salience 96
+
+when
+    Level1Facts( 
+    hasCounterOpportunity == true
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setDefensiveLineHeight( DefensiveLineHeight.STANDARD );
+    };
+
+end
+
+
+rule "Low defensive line - cautious mentality"
+    salience 93
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.CAUTIOUS
+    ||
+    selectedMentality == Mentality.DEFENSIVE
+    ||
+    selectedMentality == Mentality.VERY_DEFENSIVE
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setDefensiveLineHeight( DefensiveLineHeight.LOW );
+    };
+
+end
+
+
+rule "Standard defensive line - balanced mentality"
+    salience 92
+
+when
+    TacticalAssistantInput( 
+    teamProfile.highLineCapability == true
+     )
+
+    Level2Facts( 
+    selectedMentality == Mentality.BALANCED
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setDefensiveLineHeight( DefensiveLineHeight.STANDARD );
+    };
+
+end

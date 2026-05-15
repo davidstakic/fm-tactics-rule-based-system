@@ -1,0 +1,160 @@
+package com.ftn.sbnz.kjar.rules;
+
+import com.ftn.sbnz.model.TacticalAssistantInput;
+import com.ftn.sbnz.model.TacticalAssistantInput.TeamProfile.AttackType;
+import com.ftn.sbnz.model.TacticalAssistantInput.TeamProfile.PhysicalProfile;
+import com.ftn.sbnz.model.BasicTacticalSettings.Mentality;
+import com.ftn.sbnz.model.KeyTeamInstructions.PressingIntensity;
+import com.ftn.sbnz.model.Level1Facts;
+import com.ftn.sbnz.model.Level2Facts;
+import com.ftn.sbnz.model.Level3Facts;
+
+
+rule "Pressing HIGH - attacking mentality"
+    salience 100
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.VERY_ATTACKING
+    ||
+    selectedMentality == Mentality.ATTACKING
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.HIGH );
+    };
+
+end
+
+
+rule "Pressing HIGH - positive + pressing forwards"
+    salience 95
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.POSITIVE
+     )
+
+    TacticalAssistantInput( 
+    teamProfile.attackType == AttackType.PRESSING_ATTACKERS
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.HIGH );
+    };
+
+end
+
+
+rule "Pressing MEDIUM - positive + non pressing attackers"
+    salience 94
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.POSITIVE
+     )
+
+    TacticalAssistantInput( 
+    teamProfile.attackType != AttackType.PRESSING_ATTACKERS
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.MEDIUM );
+    };
+
+end
+
+
+rule "Pressing MEDIUM - balanced + fast team"
+    salience 90
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.BALANCED
+     )
+
+    TacticalAssistantInput( 
+    teamProfile.physicalProfile == PhysicalProfile.FAST
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.MEDIUM );
+    };
+
+end
+
+
+rule "Pressing LOW - balanced + not fast"
+    salience 89
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.BALANCED
+     )
+
+    TacticalAssistantInput( 
+    teamProfile.physicalProfile != PhysicalProfile.FAST
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.LOW );
+    };
+
+end
+
+
+rule "Pressing LOW - cautious/defensive"
+    salience 85
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.CAUTIOUS
+    ||
+    selectedMentality == Mentality.DEFENSIVE
+    ||
+    selectedMentality == Mentality.VERY_DEFENSIVE
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.LOW );
+    };
+
+end
+
+
+rule "Reduce pressing against aggressive opponent"
+    salience 110
+
+when
+    $facts : Level3Facts( 
+    pressingIntensity == PressingIntensity.HIGH
+     )
+
+    Level1Facts( 
+    isAggressiveOpponent == true
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.MEDIUM );
+    };
+
+end

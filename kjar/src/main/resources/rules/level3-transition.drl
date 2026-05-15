@@ -1,0 +1,145 @@
+package com.ftn.sbnz.kjar.rules;
+
+import com.ftn.sbnz.model.TacticalAssistantInput;
+import com.ftn.sbnz.model.TeamProfile.AttackType;
+import com.ftn.sbnz.model.TeamProfile.PhysicalProfile;
+import com.ftn.sbnz.model.BasicTacticalSettings.Mentality;
+import com.ftn.sbnz.model.KeyTeamInstructions.PressingIntensity;
+import com.ftn.sbnz.model.KeyTeamInstructions.TransitionAfterLossOfBall;
+import com.ftn.sbnz.model.Level1Facts;
+import com.ftn.sbnz.model.Level2Facts;
+import com.ftn.sbnz.model.Level3Facts;
+
+
+rule "Counter press - attacking mentality"
+    salience 100
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.ATTACKING
+    ||
+    selectedMentality == Mentality.VERY_ATTACKING
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == PressingIntensity.HIGH
+     )
+
+then
+    modify($facts) {
+        setTransitionAfterLossOfBall( 
+        TransitionAfterLossOfBall.COUNTER_PRESS
+         );
+    };
+
+end
+
+
+rule "Counter press - pressing forwards"
+    salience 95
+
+when
+    TacticalAssistantInput( 
+    teamProfile.attackType == AttackType.PRESSING_FORWARDS
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == PressingIntensity.HIGH
+     )
+
+then
+    modify($facts) {
+        setTransitionAfterLossOfBall( 
+        TransitionAfterLossOfBall.COUNTER_PRESS
+         );
+    };
+
+end
+
+
+rule "Hold shape - counter opportunity"
+    salience 90
+
+when
+    Level1Facts( 
+    hasCounterOpportunity == true
+     )
+
+    Level2Facts( 
+    selectedMentality == Mentality.DEFENSIVE
+    ||
+    selectedMentality == Mentality.CAUTIOUS
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setTransitionAfterLossOfBall( 
+        TransitionAfterLossOfBall.HOLD_SHAPE
+         );
+    };
+
+end
+
+
+rule "Regroup - low chemistry"
+    salience 85
+
+when
+    Level1Facts( 
+    hasLowFitness == true
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setTransitionAfterLossOfBall( 
+        TransitionAfterLossOfBall.REGROUP
+         );
+    };
+
+end
+
+
+rule "Counter press - balanced and fast"
+    salience 80
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.BALANCED
+     )
+
+    TacticalAssistantInput( 
+    teamProfile.physicalProfile == PhysicalProfile.FAST
+     )
+
+    $facts : Level3Facts()
+
+then
+    modify($facts) {
+        setTransitionAfterLossOfBall( 
+        TransitionAfterLossOfBall.COUNTER_PRESS
+         );
+    };
+
+end
+
+
+rule "Default transition"
+    salience 1
+
+when
+    $facts : Level3Facts( 
+    transitionAfterLossOfBall == null
+     )
+
+then
+    modify($facts) {
+        setTransitionAfterLossOfBall( 
+        TransitionAfterLossOfBall.REGROUP
+         );
+    };
+
+end
