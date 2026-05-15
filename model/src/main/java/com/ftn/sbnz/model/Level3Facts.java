@@ -24,7 +24,6 @@ public class Level3Facts {
         this.transitionAfterLossOfBall = transitionAfterLossOfBall;
     }
 
-    // Getters and Setters
     public PressingIntensity getPressingIntensity() {
         return pressingIntensity;
     }

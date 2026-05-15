@@ -1,0 +1,189 @@
+package com.ftn.sbnz.kjar.rules;
+
+import com.ftn.sbnz.model.TacticalAssistantInput;
+import com.ftn.sbnz.model.MatchContext.MatchLocation;
+import com.ftn.sbnz.model.MatchContext.MatchImportance;
+import com.ftn.sbnz.model.MatchContext.CompetitionType;
+import com.ftn.sbnz.model.OpponentProfile.OpponentWeakness;
+import com.ftn.sbnz.model.OpponentProfile.DefenseLineEngagement;
+import com.ftn.sbnz.model.OpponentProfile.PlayingStyle;
+import com.ftn.sbnz.model.Level1Facts;
+
+
+rule "Medium chemistry"
+    salience 90
+
+when
+    $input : TacticalAssistantInput( 
+    teamProfile.tacticalFitness >= 40 && teamProfile.tacticalFitness <= 69
+     )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        setHasMediumFitness( true )
+    };
+
+    System.out.println( "[LEVEL 1] SREDNJA_UIGRANOST = true" );
+
+end
+
+
+rule "Difficult away match"
+    salience 90
+
+when
+    $input : TacticalAssistantInput( 
+    matchContext.matchLocation == MatchLocation.AWAY,
+    matchContext.importance == MatchImportance.HIGH
+     )
+
+    $facts : Level1Facts( 
+    isUnderdog == true
+     )
+
+then
+    modify($facts) {
+        setIsDifficultAwayMatch( true )
+    };
+
+end
+
+
+rule "Must win"
+    salience 90
+
+when
+    $input : TacticalAssistantInput( 
+    matchContext.competitionType == CompetitionType.CUP,
+    matchContext.importance == MatchImportance.HIGH
+     )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        setMustWin( true )
+    };
+
+end
+
+
+rule "Dominant position"
+    salience 90
+
+when
+    $input : TacticalAssistantInput( 
+    matchContext.matchLocation == MatchLocation.HOME
+     )
+
+    $facts : Level1Facts( 
+    isFavorite == true
+     )
+
+then
+    modify($facts) {
+        setHasDominantPosition( true )
+    };
+
+end
+
+
+rule "Can settle for draw"
+    salience 90
+
+when
+    $input : TacticalAssistantInput( 
+    matchContext.importance == MatchImportance.MEDIUM,
+    matchContext.competitionType == CompetitionType.LEAGUE
+     )
+
+    $facts : Level1Facts( 
+    isEvenlyMatched == true
+     )
+
+then
+    modify($facts) {
+        setCanDrawMatch( true )
+    };
+
+end
+
+
+rule "Careful match"
+    salience 90
+
+when
+    $input : TacticalAssistantInput( 
+    matchContext.importance == MatchImportance.HIGH
+     )
+
+    $facts : Level1Facts( 
+    isUnderdog == true
+     )
+
+then
+    modify($facts) {
+        setIsCautiousMatch( true )
+    };
+
+end
+
+
+rule "Counter attack opportunity"
+    salience 90
+
+when
+    $input : TacticalAssistantInput( 
+    opponentProfile.opponentWeakness == OpponentWeakness.SLOW_DEFENDERS
+    ||
+    opponentProfile.opponentWeakness == OpponentWeakness.VULNERABLE_ON_FLANKS
+     )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        setHasCounterOpportunity( true )
+    };
+
+end
+
+
+rule "Aggressive opponent"
+    salience 90
+
+when
+    $input : TacticalAssistantInput( 
+    opponentProfile.lineEngagement == DefenseLineEngagement.HIGH_PRESS,
+    opponentProfile.playingStyle == PlayingStyle.POSSESSION_BASED
+     )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        setIsAggressiveOpponent( true )
+    };
+
+end
+
+
+rule "Passive opponent"
+    salience 90
+
+when
+    $input : TacticalAssistantInput( 
+    opponentProfile.lineEngagement == DefenseLineEngagement.LOW_BLOCK,
+    opponentProfile.playingStyle != PlayingStyle.COUNTER_ATTACK
+     )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        setIsPassiveOpponent( true )
+    };
+
+end
