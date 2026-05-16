@@ -16,6 +16,7 @@ template "Level 2 Choosing mentality"
 
 rule "2_mentality_@{mentality}_@{priority}"
 salience @{priority}
+no-loop true
 
 when
 
@@ -26,17 +27,17 @@ when
         @{blocking_flags}
     )
 
-    not Level2Facts()
+    $existing : Level2Facts(
+        selectedMentality == null
+    )
 
 then
 
-    Level2Facts level2 = new Level2Facts();
-
-    level2.setSelectedMentality(
-        BasicTacticalSettings.Mentality.@{mentality}
-    );
-
-    insert(level2);
+    modify($existing) {
+        setSelectedMentality(
+            BasicTacticalSettings.Mentality.@{mentality}
+        );
+    };
 
     System.out.println(
         "[LEVEL 2] Mentality = @{mentality}"

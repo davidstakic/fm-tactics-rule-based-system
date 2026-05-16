@@ -1,0 +1,36 @@
+package com.ftn.sbnz.kjar.rules;
+
+import com.ftn.sbnz.model.Level2Facts;
+import com.ftn.sbnz.model.FormationScore;
+import com.ftn.sbnz.model.BasicTacticalSettings;
+
+rule "Choose highest scoring formation"
+    salience 50
+    no-loop true
+
+when
+    $bestFormation : BasicTacticalSettings.Formation() from accumulate(
+        FormationScore($formation : formation, $score : totalScore),
+        init( BasicTacticalSettings.Formation best = null; int max = Integer.MIN_VALUE; ),
+        action( if ($score > max) { max = $score; best = $formation; } ),
+        result( best )
+    )
+
+    $bestScore : Integer() from accumulate(
+        FormationScore($score : totalScore),
+        init( int max = Integer.MIN_VALUE; ),
+        action( if ($score > max) { max = $score; } ),
+        result( max )
+    )
+
+    $facts : Level2Facts(
+        selectedFormation == null
+    )
+
+then
+    modify($facts) {
+        setSelectedFormation($bestFormation),
+        setFormationScore($bestScore);
+    };
+
+end
