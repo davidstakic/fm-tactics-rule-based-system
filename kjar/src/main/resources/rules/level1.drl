@@ -1,7 +1,7 @@
 package com.ftn.sbnz.kjar.rules;
 
 import com.ftn.sbnz.model.TacticalAssistantInput;
-import com.ftn.sbnz.model.MatchContext.MatchLocation;
+import com.ftn.sbnz.model.MatchContext.LocationType;
 import com.ftn.sbnz.model.MatchContext.MatchImportance;
 import com.ftn.sbnz.model.MatchContext.CompetitionType;
 import com.ftn.sbnz.model.OpponentProfile.OpponentWeakness;
@@ -11,7 +11,8 @@ import com.ftn.sbnz.model.Level1Facts;
 
 
 rule "Medium chemistry"
-    salience 90
+    salience 95
+    no-loop true
 
 when
     $input : TacticalAssistantInput( 
@@ -32,10 +33,11 @@ end
 
 rule "Difficult away match"
     salience 90
+    no-loop true
 
 when
     $input : TacticalAssistantInput( 
-    matchContext.matchLocation == MatchLocation.AWAY,
+    matchContext.location == LocationType.AWAY,
     matchContext.importance == MatchImportance.HIGH
      )
 
@@ -52,7 +54,8 @@ end
 
 
 rule "Must win"
-    salience 90
+    salience 95
+    no-loop true
 
 when
     $input : TacticalAssistantInput( 
@@ -72,10 +75,11 @@ end
 
 rule "Dominant position"
     salience 90
+    no-loop true
 
 when
     $input : TacticalAssistantInput( 
-    matchContext.matchLocation == MatchLocation.HOME
+    matchContext.location == LocationType.HOME
      )
 
     $facts : Level1Facts( 
@@ -92,6 +96,7 @@ end
 
 rule "Can settle for draw"
     salience 90
+    no-loop true
 
 when
     $input : TacticalAssistantInput( 
@@ -113,6 +118,7 @@ end
 
 rule "Careful match"
     salience 90
+    no-loop true
 
 when
     $input : TacticalAssistantInput( 
@@ -132,13 +138,14 @@ end
 
 
 rule "Counter attack opportunity"
-    salience 90
+    salience 95
+    no-loop true
 
 when
     $input : TacticalAssistantInput( 
-    opponentProfile.opponentWeakness == OpponentWeakness.SLOW_DEFENDERS
+    opponentProfile.weakness == OpponentWeakness.SLOW_DEFENDERS
     ||
-    opponentProfile.opponentWeakness == OpponentWeakness.VULNERABLE_ON_FLANKS
+    opponentProfile.weakness == OpponentWeakness.VULNERABLE_ON_FLANKS
      )
 
     $facts : Level1Facts()
@@ -152,7 +159,8 @@ end
 
 
 rule "Aggressive opponent"
-    salience 90
+    salience 95
+    no-loop true
 
 when
     $input : TacticalAssistantInput( 
@@ -171,7 +179,8 @@ end
 
 
 rule "Passive opponent"
-    salience 90
+    salience 95
+    no-loop true
 
 when
     $input : TacticalAssistantInput( 

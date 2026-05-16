@@ -18,6 +18,9 @@ public class Level1Facts {
     private Boolean hasDominantPosition;
     private Boolean canDrawMatch;
     private Boolean isCautiousMatch;
+    private Boolean isHomeMatch;
+    private Boolean isLowImportanceMatch;
+    private Boolean isFriendlyMatch;
 
     private Boolean hasCounterOpportunity;
     private Boolean hasAerialOpportunity;
@@ -137,6 +140,30 @@ public class Level1Facts {
         this.isCautiousMatch = isCautiousMatch;
     }
 
+    public Boolean getIsHomeMatch() {
+        return isHomeMatch;
+    }
+
+    public void setIsHomeMatch(Boolean isHomeMatch) {
+        this.isHomeMatch = isHomeMatch;
+    }
+
+    public Boolean getIsLowImportanceMatch() {
+        return isLowImportanceMatch;
+    }
+
+    public void setIsLowImportanceMatch(Boolean isLowImportanceMatch) {
+        this.isLowImportanceMatch = isLowImportanceMatch;
+    }
+
+    public Boolean getIsFriendlyMatch() {
+        return isFriendlyMatch;
+    }
+
+    public void setIsFriendlyMatch(Boolean isFriendlyMatch) {
+        this.isFriendlyMatch = isFriendlyMatch;
+    }
+
     public Boolean getHasCounterOpportunity() {
         return hasCounterOpportunity;
     }
@@ -194,6 +221,9 @@ public class Level1Facts {
                 ", hasDominantPosition=" + hasDominantPosition +
                 ", canDrawMatch=" + canDrawMatch +
                 ", isCautiousMatch=" + isCautiousMatch +
+                ", isHomeMatch=" + isHomeMatch +
+                ", isLowImportanceMatch=" + isLowImportanceMatch +
+                ", isFriendlyMatch=" + isFriendlyMatch +
                 ", hasCounterOpportunity=" + hasCounterOpportunity +
                 ", hasAerialOpportunity=" + hasAerialOpportunity +
                 ", hasShootingOpportunity=" + hasShootingOpportunity +

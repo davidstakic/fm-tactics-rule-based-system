@@ -1,24 +1,36 @@
 template header
-condition
+input_conditions
+fact_conditions
 formation_group
 number_of_points
 description
 
 package com.ftn.sbnz.kjar.rules;
 
+import java.util.List;
 import com.ftn.sbnz.model.TacticalAssistantInput;
 import com.ftn.sbnz.model.BasicTacticalSettings;
 import com.ftn.sbnz.model.FormationScore;
+import com.ftn.sbnz.model.Level1Facts;
+import com.ftn.sbnz.model.TeamProfile.AttackType;
+import com.ftn.sbnz.model.TeamProfile.MidfieldQuality;
 
 template "Level 2 Formation scoring"
 
 rule "2_scoring_@{description}"
-salience 50
+salience 60
+no-loop true
 
 when
     $input : TacticalAssistantInput(
-        @{condition}
+        @{input_conditions}
     )
+
+    $facts : Level1Facts(
+        @{fact_conditions}
+    )
+
+    not String(this == "formation-scoring:@{description}")
 
     $scores : List()
         from collect(FormationScore())
@@ -29,44 +41,25 @@ then
 
     for (String formation : formations) {
 
-        boolean found = false;
+            for (Object obj : $scores) {
 
-        for (Object obj : $scores) {
+                FormationScore score = (FormationScore) obj;
 
-            FormationScore score = (FormationScore) obj;
+                if (score.getFormation().name().equals(formation)) {
 
-            if (score.getFormation().name().equals(formation)) {
+                    score.addScore(
+                        "@{description}",
+                        @{number_of_points}
+                    );
 
-                score.addScore(
-                    "@{description}",
-                    @{number_of_points}
-                );
+                    update(score);
 
-                update(score);
-
-                found = true;
-
-                break;
+                    break;
+                }
             }
-        }
-
-        if (!found) {
-
-            FormationScore newScore =
-                new FormationScore(
-                    BasicTacticalSettings.Formation.valueOf(
-                        formation
-                    )
-                );
-
-            newScore.addScore(
-                "@{description}",
-                @{number_of_points}
-            );
-
-            insert(newScore);
-        }
     }
+
+    insert("formation-scoring:@{description}");
 
 end
 

@@ -9,14 +9,42 @@ import com.ftn.sbnz.model.Level3Facts;
 
 
 rule "Low defensive line - incapable"
-    salience 100
+    salience 30
+    no-loop true
 
 when
     TacticalAssistantInput( 
     teamProfile.highLineCapability == false
      )
 
-    $facts : Level3Facts()
+    $facts : Level3Facts(
+    defensiveLineHeight == null
+     )
+
+then
+    modify($facts) {
+        setDefensiveLineHeight( DefensiveLineHeight.LOW );
+    };
+
+end
+
+
+rule "Low defensive line - cautious mentality"
+    salience 29
+    no-loop true
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.CAUTIOUS
+    ||
+    selectedMentality == Mentality.DEFENSIVE
+    ||
+    selectedMentality == Mentality.VERY_DEFENSIVE
+     )
+
+    $facts : Level3Facts(
+    defensiveLineHeight == null
+     )
 
 then
     modify($facts) {
@@ -27,7 +55,8 @@ end
 
 
 rule "High defensive line - attacking mentality"
-    salience 95
+    salience 28
+    no-loop true
 
 when
     TacticalAssistantInput( 
@@ -40,7 +69,9 @@ when
     selectedMentality == Mentality.VERY_ATTACKING
      )
 
-    $facts : Level3Facts()
+    $facts : Level3Facts(
+    defensiveLineHeight == null
+     )
 
 then
     modify($facts) {
@@ -51,7 +82,8 @@ end
 
 
 rule "High defensive line - positive mentality without counter threat"
-    salience 94
+    salience 27
+    no-loop true
 
 when
     TacticalAssistantInput( 
@@ -66,7 +98,9 @@ when
     hasCounterOpportunity == false
      )
 
-    $facts : Level3Facts()
+    $facts : Level3Facts(
+    defensiveLineHeight == null
+     )
 
 then
     modify($facts) {
@@ -77,14 +111,21 @@ end
 
 
 rule "Standard defensive line - counter threat"
-    salience 96
+    salience 26
+    no-loop true
 
 when
+    TacticalAssistantInput(
+    teamProfile.highLineCapability == true
+     )
+
     Level1Facts( 
     hasCounterOpportunity == true
      )
 
-    $facts : Level3Facts()
+    $facts : Level3Facts(
+    defensiveLineHeight == null
+     )
 
 then
     modify($facts) {
@@ -94,30 +135,9 @@ then
 end
 
 
-rule "Low defensive line - cautious mentality"
-    salience 93
-
-when
-    Level2Facts( 
-    selectedMentality == Mentality.CAUTIOUS
-    ||
-    selectedMentality == Mentality.DEFENSIVE
-    ||
-    selectedMentality == Mentality.VERY_DEFENSIVE
-     )
-
-    $facts : Level3Facts()
-
-then
-    modify($facts) {
-        setDefensiveLineHeight( DefensiveLineHeight.LOW );
-    };
-
-end
-
-
 rule "Standard defensive line - balanced mentality"
-    salience 92
+    salience 25
+    no-loop true
 
 when
     TacticalAssistantInput( 
@@ -128,7 +148,9 @@ when
     selectedMentality == Mentality.BALANCED
      )
 
-    $facts : Level3Facts()
+    $facts : Level3Facts(
+    defensiveLineHeight == null
+     )
 
 then
     modify($facts) {

@@ -11,8 +11,36 @@ import com.ftn.sbnz.model.Level2Facts;
 import com.ftn.sbnz.model.Level3Facts;
 
 
+rule "Counter press - balanced and fast"
+    salience 20
+    no-loop true
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.BALANCED
+     )
+
+    TacticalAssistantInput( 
+    teamProfile.physicalProfile == PhysicalProfile.FAST
+     )
+
+    $facts : Level3Facts(
+    transitionAfterLossOfBall == null
+     )
+
+then
+    modify($facts) {
+        setTransitionAfterLossOfBall( 
+        TransitionAfterLossOfBall.COUNTER_PRESS
+         );
+    };
+
+end
+
+
 rule "Counter press - attacking mentality"
-    salience 100
+    salience 19
+    no-loop true
 
 when
     Level2Facts( 
@@ -22,7 +50,8 @@ when
      )
 
     $facts : Level3Facts( 
-    pressingIntensity == PressingIntensity.HIGH
+    pressingIntensity == PressingIntensity.HIGH,
+    transitionAfterLossOfBall == null
      )
 
 then
@@ -36,15 +65,17 @@ end
 
 
 rule "Counter press - pressing forwards"
-    salience 95
+    salience 18
+    no-loop true
 
 when
     TacticalAssistantInput( 
-    teamProfile.attackType == AttackType.PRESSING_FORWARDS
+    teamProfile.attackType == AttackType.PRESSING_ATTACKERS
      )
 
     $facts : Level3Facts( 
-    pressingIntensity == PressingIntensity.HIGH
+    pressingIntensity == PressingIntensity.HIGH,
+    transitionAfterLossOfBall == null
      )
 
 then
@@ -58,7 +89,8 @@ end
 
 
 rule "Hold shape - counter opportunity"
-    salience 90
+    salience 17
+    no-loop true
 
 when
     Level1Facts( 
@@ -71,7 +103,9 @@ when
     selectedMentality == Mentality.CAUTIOUS
      )
 
-    $facts : Level3Facts()
+    $facts : Level3Facts(
+    transitionAfterLossOfBall == null
+     )
 
 then
     modify($facts) {
@@ -84,14 +118,17 @@ end
 
 
 rule "Regroup - low chemistry"
-    salience 85
+    salience 16
+    no-loop true
 
 when
     Level1Facts( 
     hasLowFitness == true
      )
 
-    $facts : Level3Facts()
+    $facts : Level3Facts(
+    transitionAfterLossOfBall == null
+     )
 
 then
     modify($facts) {
@@ -103,32 +140,8 @@ then
 end
 
 
-rule "Counter press - balanced and fast"
-    salience 80
-
-when
-    Level2Facts( 
-    selectedMentality == Mentality.BALANCED
-     )
-
-    TacticalAssistantInput( 
-    teamProfile.physicalProfile == PhysicalProfile.FAST
-     )
-
-    $facts : Level3Facts()
-
-then
-    modify($facts) {
-        setTransitionAfterLossOfBall( 
-        TransitionAfterLossOfBall.COUNTER_PRESS
-         );
-    };
-
-end
-
-
 rule "Default transition"
-    salience 1
+    salience 10
 
 when
     $facts : Level3Facts( 
