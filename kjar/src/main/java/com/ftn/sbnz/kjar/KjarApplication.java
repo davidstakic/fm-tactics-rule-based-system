@@ -4,9 +4,11 @@ import java.io.InputStream;
 
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.KieBase;
 import org.kie.internal.utils.KieHelper;
 
@@ -17,7 +19,8 @@ import com.ftn.sbnz.model.TacticalAssistantInput;
 import com.ftn.sbnz.model.TeamProfile;
 import com.ftn.sbnz.model.OpponentProfile;
 import com.ftn.sbnz.model.MatchContext;
-import com.ftn.sbnz.model.RealTimeParameters;
+import com.ftn.sbnz.model.MatchStateEvent;
+import com.ftn.sbnz.model.MatchResult;
 import com.ftn.sbnz.model.BasicTacticalSettings;
 import com.ftn.sbnz.model.FormationScore;
 
@@ -30,7 +33,6 @@ import com.ftn.sbnz.model.OpponentProfile.OpponentWeakness;
 import com.ftn.sbnz.model.MatchContext.CompetitionType;
 import com.ftn.sbnz.model.MatchContext.MatchImportance;
 import com.ftn.sbnz.model.MatchContext.LocationType;
-import com.ftn.sbnz.model.RealTimeParameters.MatchResult;
 
 public class KjarApplication {
 
@@ -40,7 +42,8 @@ public class KjarApplication {
             "rules/level3-passing.drl",
             "rules/level3-pressing.drl",
             "rules/level3-transition.drl",
-            "rules/level2-formation-selection.drl"
+            "rules/level2-formation-selection.drl",
+            "cep/match-events.drl"
     };
 
     public static void main(String[] args) {
@@ -78,13 +81,18 @@ public class KjarApplication {
             throw new IllegalStateException("DRL build failed due to errors");
         }
 
-        KieBase kieBase = kieHelper.build();
+        KieBase kieBase = kieHelper.build(EventProcessingOption.STREAM);
         KieSession kieSession = kieBase.newKieSession();
         try {
             insertFacts(kieSession);
 
             int fired = kieSession.fireAllRules();
-            System.out.println("fireAllRules returned: " + fired);
+            System.out.println("initial fireAllRules returned: " + fired);
+
+            insertCepEvents(kieSession);
+
+            int cepFired = kieSession.fireAllRules();
+            System.out.println("CEP fireAllRules returned: " + cepFired);
 
             System.out.println("=== Working memory contents ===");
             kieSession.getObjects().forEach(System.out::println);
@@ -120,15 +128,6 @@ public class KjarApplication {
                 LocationType.HOME
         ));
 
-        input.setRealTimeParameters(new RealTimeParameters(
-                30,
-                MatchResult.DRAW,
-                0,
-                0,
-                0,
-                0
-        ));
-
         Level1Facts level1Facts = new Level1Facts();
 
         Level2Facts level2Facts = new Level2Facts();
@@ -146,5 +145,45 @@ public class KjarApplication {
             score.setTotalScore(0);
             kieSession.insert(score);
         }
+    }
+
+    private static void insertCepEvents(KieSession kieSession) {
+        EntryPoint matchEvents = kieSession.getEntryPoint("match-events");
+        long baseTimestamp = System.currentTimeMillis();
+
+        matchEvents.insert(new MatchStateEvent(
+                baseTimestamp,
+                0,
+                MatchResult.DRAW,
+                0,
+                0));
+
+        matchEvents.insert(new MatchStateEvent(
+                baseTimestamp + 60_000,
+                68,
+                MatchResult.DRAW,
+                0,
+                0));
+
+        matchEvents.insert(new MatchStateEvent(
+                baseTimestamp + 120_000,
+                72,
+                MatchResult.LOSING,
+                0,
+                0));
+
+        matchEvents.insert(new MatchStateEvent(
+                baseTimestamp + 180_000,
+                76,
+                MatchResult.WINNING,
+                0,
+                1));
+
+        matchEvents.insert(new MatchStateEvent(
+                baseTimestamp + 240_000,
+                80,
+                MatchResult.WINNING,
+                0,
+                2));
     }
 }

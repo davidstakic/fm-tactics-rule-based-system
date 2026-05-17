@@ -1,0 +1,308 @@
+package com.ftn.sbnz.kjar.cep;
+
+import com.ftn.sbnz.model.CEPRecommendation;
+import com.ftn.sbnz.model.ClosingLeadEvent;
+import com.ftn.sbnz.model.LateLosingEvent;
+import com.ftn.sbnz.model.Level2Facts;
+import com.ftn.sbnz.model.MatchStateEvent;
+import com.ftn.sbnz.model.MatchResult;
+import com.ftn.sbnz.model.RedCardEvent;
+import com.ftn.sbnz.model.TeamSide;
+import com.ftn.sbnz.model.BasicTacticalSettings.Mentality;
+import com.ftn.sbnz.model.KeyTeamInstructions.PassingDirectness;
+import com.ftn.sbnz.model.KeyTeamInstructions.PressingIntensity;
+import com.ftn.sbnz.model.KeyTeamInstructions.TransitionAfterLossOfBall;
+
+declare MatchStateEvent
+@role(event)
+@timestamp(timestamp)
+@expires(2h)
+end
+
+declare RedCardEvent
+@role(event)
+@timestamp(timestamp)
+@expires(2h)
+end
+
+declare LateLosingEvent
+@role(event)
+@timestamp(timestamp)
+@expires(2h)
+end
+
+declare ClosingLeadEvent
+@role(event)
+@timestamp(timestamp)
+@expires(2h)
+end
+
+function Mentality increaseMentality(Mentality current, int steps) {
+    if(current == null) {
+        return Mentality.POSITIVE;
+    }
+
+    Mentality[] values = Mentality.values();
+    int nextIndex = current.ordinal() + steps;
+    if(nextIndex >= values.length) {
+        nextIndex = values.length - 1;
+    }
+
+    return values[nextIndex];
+}
+
+function Mentality decreaseMentality(Mentality current, int steps) {
+    if(current == null) {
+        return Mentality.CAUTIOUS;
+    }
+
+    int nextIndex = current.ordinal() - steps;
+    if(nextIndex < 0) {
+        nextIndex = 0;
+    }
+
+    return Mentality.values()[nextIndex];
+}
+
+function String redCardRecommendationType(TeamSide teamSide, Integer redCardNumber) {
+    String prefix = teamSide == TeamSide.OPPONENT ? "OPPONENT_RED_CARD_" : "OWN_TEAM_RED_CARD_";
+    return prefix + redCardNumber;
+}
+
+rule "CEP detect - Opponent red card"
+    salience 120
+    no-loop true
+
+when
+    $previous : MatchStateEvent( 
+    $previousOpponentRedCards : opponentRedCards != null
+     ) from entry-point "match-events"
+
+    $current : MatchStateEvent( 
+    this after[0s, 2h] $previous,
+    $currentOpponentRedCards : opponentRedCards != null,
+    opponentRedCards > $previousOpponentRedCards
+     ) from entry-point "match-events"
+
+    not RedCardEvent( 
+    teamSide == TeamSide.OPPONENT,
+    redCardNumber == $currentOpponentRedCards
+     )
+
+then
+    RedCardEvent event = new RedCardEvent( 
+    $current.getTimestamp(),
+    $current.getCurrentMinute(),
+    TeamSide.OPPONENT,
+    $currentOpponentRedCards );
+
+    insert(event);
+
+    System.out.println( "[CEP] Detektovan crveni karton protivnika: " + $currentOpponentRedCards );
+
+end
+
+rule "CEP detect - Own team red card"
+    salience 120
+    no-loop true
+
+when
+    $previous : MatchStateEvent( 
+    $previousOwnRedCards : ownTeamRedCards != null
+     ) from entry-point "match-events"
+
+    $current : MatchStateEvent( 
+    this after[0s, 2h] $previous,
+    $currentOwnRedCards : ownTeamRedCards != null,
+    ownTeamRedCards > $previousOwnRedCards
+     ) from entry-point "match-events"
+
+    not RedCardEvent( 
+    teamSide == TeamSide.OWN_TEAM,
+    redCardNumber == $currentOwnRedCards
+     )
+
+then
+    RedCardEvent event = new RedCardEvent( 
+    $current.getTimestamp(),
+    $current.getCurrentMinute(),
+    TeamSide.OWN_TEAM,
+    $currentOwnRedCards );
+
+    insert(event);
+
+    System.out.println( "[CEP] Detektovan crveni karton sopstvenog tima: " + $currentOwnRedCards );
+
+end
+
+rule "CEP detect - Losing late"
+    salience 110
+    no-loop true
+
+when
+    $previous : MatchStateEvent( 
+    $previousMinute : currentMinute != null,
+    $previousResult : currentResult
+     ) from entry-point "match-events"
+
+    $current : MatchStateEvent( 
+    this after[0s, 2h] $previous,
+    currentMinute != null,
+    currentMinute >= 70,
+    currentResult == MatchResult.LOSING,
+    ( $previousMinute < 70 || $previousResult != MatchResult.LOSING )
+     ) from entry-point "match-events"
+
+    not LateLosingEvent()
+
+then
+    LateLosingEvent event = new LateLosingEvent( 
+    $current.getTimestamp(),
+    $current.getCurrentMinute() );
+
+    insert(event);
+
+    System.out.println( "[CEP] Detektovano gubljenje u kasnoj fazi" );
+
+end
+
+rule "CEP detect - Winning in closing phase"
+    salience 110
+    no-loop true
+
+when
+    $previous : MatchStateEvent( 
+    $previousMinute : currentMinute != null,
+    $previousResult : currentResult
+     ) from entry-point "match-events"
+
+    $current : MatchStateEvent( 
+    this after[0s, 2h] $previous,
+    currentMinute != null,
+    currentMinute >= 75,
+    currentResult == MatchResult.WINNING,
+    ( $previousMinute < 75 || $previousResult != MatchResult.WINNING )
+     ) from entry-point "match-events"
+
+    not ClosingLeadEvent()
+
+then
+    ClosingLeadEvent event = new ClosingLeadEvent( 
+    $current.getTimestamp(),
+    $current.getCurrentMinute() );
+
+    insert(event);
+
+    System.out.println( "[CEP] Detektovano vodjstvo u zavrsnici" );
+
+end
+
+rule "CEP recommend - Opponent red card"
+    salience 100
+    no-loop true
+
+when
+    $event : RedCardEvent( 
+    teamSide == TeamSide.OPPONENT,
+    $redCardNumber : redCardNumber
+     )
+
+    Level2Facts( $mentality : selectedMentality )
+
+    not CEPRecommendation( 
+    eventType == redCardRecommendationType( TeamSide.OPPONENT, $redCardNumber )
+     )
+
+then
+    CEPRecommendation recommendation = new CEPRecommendation( 
+    redCardRecommendationType( TeamSide.OPPONENT, $redCardNumber ),
+    "Protivnik je dobio " + $redCardNumber + ". crveni karton u " + $event.getMinute() + ". minutu.",
+    "Broj crvenih kartona protivnika se povecao u toku meca, pa tim moze da preuzme vise rizika, zadrzi loptu kracim pasom i pojaca pritisak." );
+    recommendation.setAdjustedMentality( increaseMentality( $mentality, 1 ) );
+    recommendation.setAdjustedPassing( PassingDirectness.SHORTER );
+    recommendation.setAdjustedPressing( PressingIntensity.HIGH );
+
+    insert(recommendation);
+
+    System.out.println( "[CEP] Preporuka za crveni karton protivnika " + $redCardNumber + " -> mentalitet +1, passing SHORTER, pressing HIGH" );
+
+end
+
+rule "CEP recommend - Own team red card"
+    salience 100
+    no-loop true
+
+when
+    $event : RedCardEvent( 
+    teamSide == TeamSide.OWN_TEAM,
+    $redCardNumber : redCardNumber
+     )
+
+    Level2Facts( $mentality : selectedMentality )
+
+    not CEPRecommendation( 
+    eventType == redCardRecommendationType( TeamSide.OWN_TEAM, $redCardNumber )
+     )
+
+then
+    CEPRecommendation recommendation = new CEPRecommendation( 
+    redCardRecommendationType( TeamSide.OWN_TEAM, $redCardNumber ),
+    "Sopstveni tim je dobio " + $redCardNumber + ". crveni karton u " + $event.getMinute() + ". minutu.",
+    "Broj crvenih kartona sopstvenog tima se povecao, pa treba smanjiti rizik, spustiti intenzitet presinga i vratiti organizaciju posle izgubljene lopte." );
+    recommendation.setAdjustedMentality( decreaseMentality( $mentality, 2 ) );
+    recommendation.setAdjustedPressing( PressingIntensity.LOW );
+    recommendation.setAdjustedTransition( TransitionAfterLossOfBall.REGROUP );
+
+    insert(recommendation);
+
+    System.out.println( "[CEP] Preporuka za crveni karton sopstvenog tima " + $redCardNumber + " -> mentalitet -2, pressing LOW, transition REGROUP" );
+
+end
+
+rule "CEP recommend - Losing late"
+    salience 90
+    no-loop true
+
+when
+    $event : LateLosingEvent()
+
+    not CEPRecommendation( eventType == "LOSING_LATE" )
+
+then
+    CEPRecommendation recommendation = new CEPRecommendation( 
+    "LOSING_LATE",
+            "Sopstveni tim gubi u kasnoj fazi utakmice (" + $event.getMinute() + ". minut).",
+    "Tim je usao u kasnu fazu sa negativnim rezultatom, pa je potrebno brze napadati, pojacati presing i igrati direktnije." );
+    recommendation.setAdjustedMentality( Mentality.ATTACKING );
+    recommendation.setAdjustedPressing( PressingIntensity.HIGH );
+    recommendation.setAdjustedPassing( PassingDirectness.DIRECT );
+
+    insert(recommendation);
+
+    System.out.println( "[CEP] Preporuka za gubljenje u kasnoj fazi -> mentalitet ATTACKING, pressing HIGH, passing DIRECT" );
+
+end
+
+rule "CEP recommend - Winning in closing phase"
+    salience 90
+    no-loop true
+
+when
+    $event : ClosingLeadEvent()
+
+    not CEPRecommendation( eventType == "WINNING_CLOSING_PHASE" )
+
+then
+    CEPRecommendation recommendation = new CEPRecommendation( 
+    "WINNING_CLOSING_PHASE",
+            "Sopstveni tim vodi u zavrsnici utakmice (" + $event.getMinute() + ". minut).",
+    "Tim je usao u zavrsnicu sa prednoscu, pa je prioritet kontrola rizika: defanzivniji mentalitet, cuvanje oblika i nizi presing." );
+    recommendation.setAdjustedMentality( Mentality.DEFENSIVE );
+    recommendation.setAdjustedTransition( TransitionAfterLossOfBall.HOLD_SHAPE );
+    recommendation.setAdjustedPressing( PressingIntensity.LOW );
+
+    insert(recommendation);
+
+    System.out.println( "[CEP] Preporuka za vodjstvo u zavrsnici -> mentalitet DEFENSIVE, transition HOLD_SHAPE, pressing LOW" );
+
+end
