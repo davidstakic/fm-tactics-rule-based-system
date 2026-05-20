@@ -23,6 +23,7 @@ import com.ftn.sbnz.model.MatchStateEvent;
 import com.ftn.sbnz.model.MatchResult;
 import com.ftn.sbnz.model.BasicTacticalSettings;
 import com.ftn.sbnz.model.FormationScore;
+import com.ftn.sbnz.model.TacticalGoal;
 
 import com.ftn.sbnz.model.TeamProfile.AttackType;
 import com.ftn.sbnz.model.TeamProfile.MidfieldQuality;
@@ -43,6 +44,7 @@ public class KjarApplication {
             "rules/level3-pressing.drl",
             "rules/level3-transition.drl",
             "rules/level2-formation-selection.drl",
+            "rules/backward-tactical-goals.drl",
             "cep/match-events.drl"
     };
 
@@ -85,9 +87,20 @@ public class KjarApplication {
         KieSession kieSession = kieBase.newKieSession();
         try {
             insertFacts(kieSession);
+            insertTacticalGoals(kieSession);
 
             int fired = kieSession.fireAllRules();
             System.out.println("initial fireAllRules returned: " + fired);
+
+            TacticalGoalPrinter.printGoalRequirements(
+                    kieSession,
+                    TacticalGoalTree.formationGoal(BasicTacticalSettings.Formation.FORMATION_433));
+            TacticalGoalPrinter.printGoalRequirements(
+                    kieSession,
+                    TacticalGoalTree.mentalityGoal(BasicTacticalSettings.Mentality.ATTACKING));
+            TacticalGoalPrinter.printGoalRequirements(
+                    kieSession,
+                    TacticalGoalTree.pressingGoal(com.ftn.sbnz.model.KeyTeamInstructions.PressingIntensity.HIGH));
 
             insertCepEvents(kieSession);
 
@@ -95,7 +108,9 @@ public class KjarApplication {
             System.out.println("CEP fireAllRules returned: " + cepFired);
 
             System.out.println("=== Working memory contents ===");
-            kieSession.getObjects().forEach(System.out::println);
+            kieSession.getObjects().stream()
+                    .filter(object -> !(object instanceof TacticalGoal))
+                    .forEach(System.out::println);
         } finally {
             if (kieSession != null) {
                 kieSession.dispose();
@@ -147,6 +162,12 @@ public class KjarApplication {
         }
     }
 
+    private static void insertTacticalGoals(KieSession kieSession) {
+        for (TacticalGoal tacticalGoal : TacticalGoalTree.createTacticalGoals()) {
+            kieSession.insert(tacticalGoal);
+        }
+    }
+
     private static void insertCepEvents(KieSession kieSession) {
         EntryPoint matchEvents = kieSession.getEntryPoint("match-events");
         long baseTimestamp = System.currentTimeMillis();
@@ -186,4 +207,5 @@ public class KjarApplication {
                 0,
                 2));
     }
+
 }
