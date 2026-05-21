@@ -3,13 +3,13 @@ package com.ftn.sbnz.kjar;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ftn.sbnz.model.BasicTacticalSettings.Formation;
-import com.ftn.sbnz.model.BasicTacticalSettings.Mentality;
-import com.ftn.sbnz.model.KeyTeamInstructions.DefensiveLineHeight;
-import com.ftn.sbnz.model.KeyTeamInstructions.PassingDirectness;
-import com.ftn.sbnz.model.KeyTeamInstructions.PressingIntensity;
-import com.ftn.sbnz.model.KeyTeamInstructions.TransitionAfterLossOfBall;
-import com.ftn.sbnz.model.TacticalGoal;
+import com.ftn.sbnz.model.backward.TacticalGoal;
+import com.ftn.sbnz.model.enums.DefensiveLineHeight;
+import com.ftn.sbnz.model.enums.Formation;
+import com.ftn.sbnz.model.enums.Mentality;
+import com.ftn.sbnz.model.enums.PassingDirectness;
+import com.ftn.sbnz.model.enums.PressingIntensity;
+import com.ftn.sbnz.model.enums.TransitionAfterLossOfBall;
 
 public final class TacticalGoalTree {
 

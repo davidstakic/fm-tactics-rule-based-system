@@ -11,7 +11,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
 
-import com.ftn.sbnz.model.TacticalGoal;
+import com.ftn.sbnz.model.backward.TacticalGoal;
 
 public final class TacticalGoalPrinter {
 

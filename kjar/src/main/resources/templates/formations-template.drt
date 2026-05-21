@@ -8,12 +8,11 @@ description
 package com.ftn.sbnz.kjar.rules;
 
 import java.util.List;
-import com.ftn.sbnz.model.TacticalAssistantInput;
-import com.ftn.sbnz.model.BasicTacticalSettings;
-import com.ftn.sbnz.model.FormationScore;
-import com.ftn.sbnz.model.Level1Facts;
-import com.ftn.sbnz.model.TeamProfile.AttackType;
-import com.ftn.sbnz.model.TeamProfile.MidfieldQuality;
+import com.ftn.sbnz.model.enums.AttackType;
+import com.ftn.sbnz.model.enums.MidfieldQuality;
+import com.ftn.sbnz.model.forward.TacticalAssistantInput;
+import com.ftn.sbnz.model.forward.FormationScore;
+import com.ftn.sbnz.model.forward.Level1Facts;
 
 template "Level 2 Formation scoring"
 

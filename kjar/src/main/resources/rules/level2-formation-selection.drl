@@ -1,17 +1,17 @@
 package com.ftn.sbnz.kjar.rules;
 
-import com.ftn.sbnz.model.Level2Facts;
-import com.ftn.sbnz.model.FormationScore;
-import com.ftn.sbnz.model.BasicTacticalSettings;
+import com.ftn.sbnz.model.enums.Formation;
+import com.ftn.sbnz.model.forward.Level2Facts;
+import com.ftn.sbnz.model.forward.FormationScore;
 
 rule "Choose highest scoring formation"
     salience 50
     no-loop true
 
 when
-    $bestFormation : BasicTacticalSettings.Formation() from accumulate(
+    $bestFormation : Formation() from accumulate(
         FormationScore($formation : formation, $score : totalScore),
-        init( BasicTacticalSettings.Formation best = null; int max = Integer.MIN_VALUE; ),
+        init( Formation best = null; int max = Integer.MIN_VALUE; ),
         action( if ($score > max) { max = $score; best = $formation; } ),
         result( best )
     )

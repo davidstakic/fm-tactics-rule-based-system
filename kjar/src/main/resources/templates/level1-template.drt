@@ -6,14 +6,14 @@ flag_name
 
 package com.ftn.sbnz.kjar.rules;
 
-import com.ftn.sbnz.model.TacticalAssistantInput;
-import com.ftn.sbnz.model.MatchContext.LocationType;
-import com.ftn.sbnz.model.MatchContext.MatchImportance;
-import com.ftn.sbnz.model.MatchContext.CompetitionType;
-import com.ftn.sbnz.model.OpponentProfile.OpponentWeakness;
-import com.ftn.sbnz.model.OpponentProfile.DefenseLineEngagement;
-import com.ftn.sbnz.model.OpponentProfile.PlayingStyle;
-import com.ftn.sbnz.model.Level1Facts;
+import com.ftn.sbnz.model.enums.CompetitionType;
+import com.ftn.sbnz.model.enums.DefenseLineEngagement;
+import com.ftn.sbnz.model.enums.LocationType;
+import com.ftn.sbnz.model.enums.MatchImportance;
+import com.ftn.sbnz.model.enums.OpponentWeakness;
+import com.ftn.sbnz.model.enums.PlayingStyle;
+import com.ftn.sbnz.model.forward.TacticalAssistantInput;
+import com.ftn.sbnz.model.forward.Level1Facts;
 
 function int countWinsInForm(String formLast5Matches) {
     if (formLast5Matches == null || formLast5Matches.trim().isEmpty()) {

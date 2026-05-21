@@ -7,10 +7,10 @@ description
 
 package com.ftn.sbnz.kjar.rules;
 
-import com.ftn.sbnz.model.TacticalAssistantInput;
-import com.ftn.sbnz.model.BasicTacticalSettings;
-import com.ftn.sbnz.model.Level1Facts;
-import com.ftn.sbnz.model.Level2Facts;
+import com.ftn.sbnz.model.enums.Mentality;
+import com.ftn.sbnz.model.forward.TacticalAssistantInput;
+import com.ftn.sbnz.model.forward.Level1Facts;
+import com.ftn.sbnz.model.forward.Level2Facts;
 
 template "Level 2 Choosing mentality"
 
@@ -35,7 +35,7 @@ then
 
     modify($existing) {
         setSelectedMentality(
-            BasicTacticalSettings.Mentality.@{mentality}
+            Mentality.@{mentality}
         );
     };
 
