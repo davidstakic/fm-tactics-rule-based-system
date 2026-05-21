@@ -12,28 +12,29 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.KieBase;
 import org.kie.internal.utils.KieHelper;
 
-import com.ftn.sbnz.model.Level1Facts;
-import com.ftn.sbnz.model.Level2Facts;
-import com.ftn.sbnz.model.Level3Facts;
-import com.ftn.sbnz.model.TacticalAssistantInput;
-import com.ftn.sbnz.model.TeamProfile;
-import com.ftn.sbnz.model.OpponentProfile;
-import com.ftn.sbnz.model.MatchContext;
-import com.ftn.sbnz.model.MatchStateEvent;
-import com.ftn.sbnz.model.MatchResult;
-import com.ftn.sbnz.model.BasicTacticalSettings;
-import com.ftn.sbnz.model.FormationScore;
-import com.ftn.sbnz.model.TacticalGoal;
-
-import com.ftn.sbnz.model.TeamProfile.AttackType;
-import com.ftn.sbnz.model.TeamProfile.MidfieldQuality;
-import com.ftn.sbnz.model.TeamProfile.PhysicalProfile;
-import com.ftn.sbnz.model.OpponentProfile.PlayingStyle;
-import com.ftn.sbnz.model.OpponentProfile.DefenseLineEngagement;
-import com.ftn.sbnz.model.OpponentProfile.OpponentWeakness;
-import com.ftn.sbnz.model.MatchContext.CompetitionType;
-import com.ftn.sbnz.model.MatchContext.MatchImportance;
-import com.ftn.sbnz.model.MatchContext.LocationType;
+import com.ftn.sbnz.model.backward.TacticalGoal;
+import com.ftn.sbnz.model.cep.MatchStateEvent;
+import com.ftn.sbnz.model.enums.AttackType;
+import com.ftn.sbnz.model.enums.CompetitionType;
+import com.ftn.sbnz.model.enums.DefenseLineEngagement;
+import com.ftn.sbnz.model.enums.Formation;
+import com.ftn.sbnz.model.enums.LocationType;
+import com.ftn.sbnz.model.enums.MatchImportance;
+import com.ftn.sbnz.model.enums.MatchResult;
+import com.ftn.sbnz.model.enums.Mentality;
+import com.ftn.sbnz.model.enums.MidfieldQuality;
+import com.ftn.sbnz.model.enums.OpponentWeakness;
+import com.ftn.sbnz.model.enums.PhysicalProfile;
+import com.ftn.sbnz.model.enums.PlayingStyle;
+import com.ftn.sbnz.model.enums.PressingIntensity;
+import com.ftn.sbnz.model.forward.FormationScore;
+import com.ftn.sbnz.model.forward.Level1Facts;
+import com.ftn.sbnz.model.forward.Level2Facts;
+import com.ftn.sbnz.model.forward.Level3Facts;
+import com.ftn.sbnz.model.forward.MatchContext;
+import com.ftn.sbnz.model.forward.OpponentProfile;
+import com.ftn.sbnz.model.forward.TacticalAssistantInput;
+import com.ftn.sbnz.model.forward.TeamProfile;
 
 public class KjarApplication {
 
@@ -94,13 +95,13 @@ public class KjarApplication {
 
             TacticalGoalPrinter.printGoalRequirements(
                     kieSession,
-                    TacticalGoalTree.formationGoal(BasicTacticalSettings.Formation.FORMATION_433));
+                    TacticalGoalTree.formationGoal(Formation.FORMATION_433));
             TacticalGoalPrinter.printGoalRequirements(
                     kieSession,
-                    TacticalGoalTree.mentalityGoal(BasicTacticalSettings.Mentality.ATTACKING));
+                    TacticalGoalTree.mentalityGoal(Mentality.ATTACKING));
             TacticalGoalPrinter.printGoalRequirements(
                     kieSession,
-                    TacticalGoalTree.pressingGoal(com.ftn.sbnz.model.KeyTeamInstructions.PressingIntensity.HIGH));
+                    TacticalGoalTree.pressingGoal(PressingIntensity.HIGH));
 
             insertCepEvents(kieSession);
 
@@ -154,7 +155,7 @@ public class KjarApplication {
         kieSession.insert(level2Facts);
         kieSession.insert(level3Facts);
 
-        for (BasicTacticalSettings.Formation formation : BasicTacticalSettings.Formation.values()) {
+        for (Formation formation : Formation.values()) {
             FormationScore score = new FormationScore();
             score.setFormation(formation);
             score.setTotalScore(0);

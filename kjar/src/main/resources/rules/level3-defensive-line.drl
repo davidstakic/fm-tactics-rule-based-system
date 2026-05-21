@@ -1,11 +1,11 @@
 package com.ftn.sbnz.kjar.rules;
 
-import com.ftn.sbnz.model.TacticalAssistantInput;
-import com.ftn.sbnz.model.BasicTacticalSettings.Mentality;
-import com.ftn.sbnz.model.KeyTeamInstructions.DefensiveLineHeight;
-import com.ftn.sbnz.model.Level1Facts;
-import com.ftn.sbnz.model.Level2Facts;
-import com.ftn.sbnz.model.Level3Facts;
+import com.ftn.sbnz.model.enums.DefensiveLineHeight;
+import com.ftn.sbnz.model.enums.Mentality;
+import com.ftn.sbnz.model.forward.TacticalAssistantInput;
+import com.ftn.sbnz.model.forward.Level1Facts;
+import com.ftn.sbnz.model.forward.Level2Facts;
+import com.ftn.sbnz.model.forward.Level3Facts;
 
 
 rule "Low defensive line - incapable"
