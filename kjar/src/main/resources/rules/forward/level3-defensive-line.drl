@@ -1,4 +1,4 @@
-package com.ftn.sbnz.kjar.rules;
+package com.ftn.sbnz.kjar.rules.forward;
 
 import com.ftn.sbnz.model.enums.DefensiveLineHeight;
 import com.ftn.sbnz.model.enums.Mentality;
@@ -6,9 +6,10 @@ import com.ftn.sbnz.model.forward.TacticalAssistantInput;
 import com.ftn.sbnz.model.forward.Level1Facts;
 import com.ftn.sbnz.model.forward.Level2Facts;
 import com.ftn.sbnz.model.forward.Level3Facts;
+import com.ftn.sbnz.model.forward.factory.TacticalExplanationFactory;
 
 
-rule "Low defensive line - incapable"
+rule "FC L3 - Defensive line LOW - no high-line capability"
     salience 30
     no-loop true
 
@@ -25,11 +26,15 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.LOW );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.LOW, "the team is not well suited to holding a high defensive line"));
+    update($facts);
+
+    System.out.println("[FC:L3] defensiveLineHeight=LOW | reason=no high-line capability");
 
 end
 
 
-rule "Low defensive line - cautious mentality"
+rule "FC L3 - Defensive line LOW - cautious or defensive mentality"
     salience 29
     no-loop true
 
@@ -50,11 +55,15 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.LOW );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.LOW, "the selected mentality asks the team to stay compact and protect space"));
+    update($facts);
+
+    System.out.println("[FC:L3] defensiveLineHeight=LOW | reason=cautious or defensive mentality");
 
 end
 
 
-rule "High defensive line - attacking mentality"
+rule "FC L3 - Defensive line HIGH - attacking mentality"
     salience 28
     no-loop true
 
@@ -77,11 +86,15 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.HIGH );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.HIGH, "the team can handle a higher line and the mentality is attacking"));
+    update($facts);
+
+    System.out.println("[FC:L3] defensiveLineHeight=HIGH | reason=high-line capable attacking team");
 
 end
 
 
-rule "High defensive line - positive mentality without counter threat"
+rule "FC L3 - Defensive line HIGH - positive without counter threat"
     salience 27
     no-loop true
 
@@ -106,11 +119,15 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.HIGH );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.HIGH, "the team can defend higher and there is no strong counter threat"));
+    update($facts);
+
+    System.out.println("[FC:L3] defensiveLineHeight=HIGH | reason=positive mentality without counter threat");
 
 end
 
 
-rule "Standard defensive line - counter threat"
+rule "FC L3 - Defensive line STANDARD - counter threat"
     salience 26
     no-loop true
 
@@ -131,11 +148,15 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.STANDARD );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.STANDARD, "the opponent has counter-attacking space, so the line should not be too high"));
+    update($facts);
+
+    System.out.println("[FC:L3] defensiveLineHeight=STANDARD | reason=counter threat");
 
 end
 
 
-rule "Standard defensive line - balanced mentality"
+rule "FC L3 - Defensive line STANDARD - balanced mentality"
     salience 25
     no-loop true
 
@@ -156,5 +177,9 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.STANDARD );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.STANDARD, "the balanced mentality calls for a stable defensive position"));
+    update($facts);
+
+    System.out.println("[FC:L3] defensiveLineHeight=STANDARD | reason=balanced mentality");
 
 end

@@ -1,4 +1,4 @@
-package com.ftn.sbnz.kjar;
+package com.ftn.sbnz.kjar.backward;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +45,7 @@ public final class TacticalGoalTree {
 
         addLevel1InputGoals(tacticalGoals);
         addLevel1DerivedGoals(tacticalGoals);
+        addCompositeGoals(tacticalGoals);
         addMentalityGoals(tacticalGoals);
         addFormationScoringGoals(tacticalGoals);
         addPressingGoals(tacticalGoals);
@@ -101,6 +102,57 @@ public final class TacticalGoalTree {
                 "INPUT:opponentProfile.playingStyle != COUNTER_ATTACK");
     }
 
+    private static void addCompositeGoals(List<TacticalGoal> tacticalGoals) {
+        addAnyRequiredGroup(tacticalGoals, "COMPOSITE:UnderdogOrCautious", "Underdog or cautious match",
+                "LEVEL1:IsUnderdog",
+                "LEVEL1:IsCautiousMatch");
+        addAnyRequiredGroup(tacticalGoals, "COMPOSITE:NotEvenlyMatchedOrNotMustWin", "Not evenly matched or not must-win",
+                "NOT:LEVEL1:IsEvenlyMatched",
+                "NOT:LEVEL1:MustWin");
+        addAnyRequiredGroup(tacticalGoals, "COMPOSITE:NotUnderdogOrNotMustWin", "Not underdog or not must-win",
+                "NOT:LEVEL1:IsUnderdog",
+                "NOT:LEVEL1:MustWin");
+        addAnyRequiredGroup(tacticalGoals, "COMPOSITE:VeryAttackingOrAttacking", "Very attacking or attacking mentality",
+                mentalityGoal(Mentality.VERY_ATTACKING),
+                mentalityGoal(Mentality.ATTACKING));
+        addAnyRequiredGroup(tacticalGoals, "COMPOSITE:CautiousOrDefensiveOrVeryDefensive", "Cautious or defensive mentality",
+                mentalityGoal(Mentality.CAUTIOUS),
+                mentalityGoal(Mentality.DEFENSIVE),
+                mentalityGoal(Mentality.VERY_DEFENSIVE));
+        addAnyRequiredGroup(tacticalGoals, "COMPOSITE:AttackingOrVeryAttacking", "Attacking or very attacking mentality",
+                mentalityGoal(Mentality.ATTACKING),
+                mentalityGoal(Mentality.VERY_ATTACKING));
+        addAnyRequiredGroup(tacticalGoals, "COMPOSITE:DefensiveOrCautious", "Defensive or cautious mentality",
+                mentalityGoal(Mentality.DEFENSIVE),
+                mentalityGoal(Mentality.CAUTIOUS));
+        addAnyRequiredGroup(tacticalGoals, "COMPOSITE:PositiveOrAttacking", "Positive or attacking mentality",
+                mentalityGoal(Mentality.POSITIVE),
+                mentalityGoal(Mentality.ATTACKING));
+
+        addAnyRequiredGroup(tacticalGoals, "NOT:LEVEL1:IsFavorite", "Team is not a clear favorite",
+                "LEVEL1:IsUnderdog",
+                "LEVEL1:IsEvenlyMatched");
+        addAnyRequiredGroup(tacticalGoals, "NOT:LEVEL1:IsUnderdog", "Team is not an underdog",
+                "LEVEL1:IsFavorite",
+                "LEVEL1:IsEvenlyMatched");
+        addAnyRequiredGroup(tacticalGoals, "NOT:LEVEL1:IsEvenlyMatched", "Match is not evenly matched",
+                "LEVEL1:IsFavorite",
+                "LEVEL1:IsUnderdog");
+        addAnyRequiredGroup(tacticalGoals, "NOT:LEVEL1:MustWin", "Match is not must-win",
+                "INPUT:matchContext.competitionType == FRIENDLY",
+                "INPUT:matchContext.competitionType == LEAGUE",
+                "INPUT:matchContext.importance == LOW",
+                "INPUT:matchContext.importance == MEDIUM");
+        addAnyRequiredGroup(tacticalGoals, "NOT:LEVEL1:HasDominantPosition", "No dominant match position",
+                "NOT:LEVEL1:IsFavorite",
+                "INPUT:matchContext.location == AWAY");
+        addAnyRequiredGroup(tacticalGoals, "NOT:LEVEL1:IsDifficultAwayMatch", "Not a difficult away match",
+                "NOT:LEVEL1:IsUnderdog",
+                "INPUT:matchContext.location == HOME",
+                "INPUT:matchContext.importance == LOW",
+                "INPUT:matchContext.importance == MEDIUM");
+    }
+
     private static void addMentalityGoals(List<TacticalGoal> tacticalGoals) {
         addAllRequiredGroup(tacticalGoals, mentalityGoal(Mentality.ATTACKING), "Must win favorite", "LEVEL1:MustWin", "LEVEL1:IsFavorite");
         addAllRequiredGroup(tacticalGoals, mentalityGoal(Mentality.ATTACKING), "Dominant good form", "LEVEL1:HasDominantPosition", "LEVEL1:HasGoodForm");
@@ -111,15 +163,15 @@ public final class TacticalGoalTree {
         addAllRequiredGroup(tacticalGoals, mentalityGoal(Mentality.BALANCED), "Must win underdog", "LEVEL1:MustWin", "LEVEL1:IsUnderdog");
         addAllRequiredGroup(tacticalGoals, mentalityGoal(Mentality.BALANCED), "Even neutral match", "LEVEL1:IsEvenlyMatched", "LEVEL1:HasNeutralForm");
         addAllRequiredGroup(tacticalGoals, mentalityGoal(Mentality.BALANCED), "Underdog low importance", "LEVEL1:IsUnderdog", "LEVEL1:IsLowImportanceMatch");
-        addAllRequiredGroup(tacticalGoals, mentalityGoal(Mentality.DEFENSIVE), "Tough away match", "LEVEL1:IsDifficultAwayMatch", "LEVEL1:IsEvenlyMatched != true OR LEVEL1:MustWin != true");
-        addAllRequiredGroup(tacticalGoals, mentalityGoal(Mentality.CAUTIOUS), "Cautious but not difficult away", "LEVEL1:IsCautiousMatch", "NOT:LEVEL1:IsDifficultAwayMatch", "LEVEL1:IsUnderdog != true OR LEVEL1:MustWin != true");
+        addAllRequiredGroup(tacticalGoals, mentalityGoal(Mentality.DEFENSIVE), "Tough away match", "LEVEL1:IsDifficultAwayMatch", "COMPOSITE:NotEvenlyMatchedOrNotMustWin");
+        addAllRequiredGroup(tacticalGoals, mentalityGoal(Mentality.CAUTIOUS), "Cautious but not difficult away", "LEVEL1:IsCautiousMatch", "NOT:LEVEL1:IsDifficultAwayMatch", "COMPOSITE:NotUnderdogOrNotMustWin");
         addAllRequiredGroup(tacticalGoals, mentalityGoal(Mentality.CAUTIOUS), "Can draw", "LEVEL1:CanDrawMatch");
     }
 
     private static void addFormationScoringGoals(List<TacticalGoal> tacticalGoals) {
         addFormationScoreGoal(tacticalGoals, "Defensive formations for underdogs or cautious matches", 2,
                 new Formation[] { Formation.FORMATION_532, Formation.FORMATION_523, Formation.FORMATION_541 },
-                "LEVEL1:IsUnderdog OR LEVEL1:IsCautiousMatch");
+                "COMPOSITE:UnderdogOrCautious");
         addFormationScoreGoal(tacticalGoals, "Extra defensive formations for a tough away match", 1,
                 new Formation[] { Formation.FORMATION_532, Formation.FORMATION_523, Formation.FORMATION_541 },
                 "LEVEL1:IsDifficultAwayMatch");
@@ -165,20 +217,20 @@ public final class TacticalGoalTree {
     }
 
     private static void addPressingGoals(List<TacticalGoal> tacticalGoals) {
-        addAllRequiredGroup(tacticalGoals, "BASE_PRESSING:HIGH", "Attacking mentality", "MENTALITY:VERY_ATTACKING OR MENTALITY:ATTACKING");
+        addAllRequiredGroup(tacticalGoals, "BASE_PRESSING:HIGH", "Attacking mentality", "COMPOSITE:VeryAttackingOrAttacking");
         addAllRequiredGroup(tacticalGoals, "BASE_PRESSING:HIGH", "Positive with pressing forwards", mentalityGoal(Mentality.POSITIVE), "INPUT:teamProfile.attackType == PRESSING_ATTACKERS");
         addAllRequiredGroup(tacticalGoals, pressingGoal(PressingIntensity.HIGH), "High pressing is not reduced", "BASE_PRESSING:HIGH", "NOT:LEVEL1:IsAggressiveOpponent");
         addAllRequiredGroup(tacticalGoals, pressingGoal(PressingIntensity.MEDIUM), "Positive without pressing forwards", mentalityGoal(Mentality.POSITIVE), "INPUT:teamProfile.attackType != PRESSING_ATTACKERS");
         addAllRequiredGroup(tacticalGoals, pressingGoal(PressingIntensity.MEDIUM), "Balanced fast team", mentalityGoal(Mentality.BALANCED), "INPUT:teamProfile.physicalProfile == FAST");
         addAllRequiredGroup(tacticalGoals, pressingGoal(PressingIntensity.MEDIUM), "Reduced high pressing against aggressive opponent", "BASE_PRESSING:HIGH", "LEVEL1:IsAggressiveOpponent");
         addAllRequiredGroup(tacticalGoals, pressingGoal(PressingIntensity.LOW), "Balanced but not fast", mentalityGoal(Mentality.BALANCED), "INPUT:teamProfile.physicalProfile != FAST");
-        addAllRequiredGroup(tacticalGoals, pressingGoal(PressingIntensity.LOW), "Cautious or defensive mentality", "MENTALITY:CAUTIOUS OR MENTALITY:DEFENSIVE OR MENTALITY:VERY_DEFENSIVE");
+        addAllRequiredGroup(tacticalGoals, pressingGoal(PressingIntensity.LOW), "Cautious or defensive mentality", "COMPOSITE:CautiousOrDefensiveOrVeryDefensive");
     }
 
     private static void addDefensiveLineGoals(List<TacticalGoal> tacticalGoals) {
         addAllRequiredGroup(tacticalGoals, defensiveLineGoal(DefensiveLineHeight.LOW), "Team cannot play a high line", "INPUT:teamProfile.highLineCapability == false");
-        addAllRequiredGroup(tacticalGoals, defensiveLineGoal(DefensiveLineHeight.LOW), "Cautious or defensive mentality", "MENTALITY:CAUTIOUS OR MENTALITY:DEFENSIVE OR MENTALITY:VERY_DEFENSIVE");
-        addAllRequiredGroup(tacticalGoals, defensiveLineGoal(DefensiveLineHeight.HIGH), "High-line capable attacking team", "INPUT:teamProfile.highLineCapability == true", "MENTALITY:ATTACKING OR MENTALITY:VERY_ATTACKING");
+        addAllRequiredGroup(tacticalGoals, defensiveLineGoal(DefensiveLineHeight.LOW), "Cautious or defensive mentality", "COMPOSITE:CautiousOrDefensiveOrVeryDefensive");
+        addAllRequiredGroup(tacticalGoals, defensiveLineGoal(DefensiveLineHeight.HIGH), "High-line capable attacking team", "INPUT:teamProfile.highLineCapability == true", "COMPOSITE:AttackingOrVeryAttacking");
         addAllRequiredGroup(tacticalGoals, defensiveLineGoal(DefensiveLineHeight.HIGH), "Positive without counter threat", "INPUT:teamProfile.highLineCapability == true", mentalityGoal(Mentality.POSITIVE), "NOT:LEVEL1:HasCounterOpportunity");
         addAllRequiredGroup(tacticalGoals, defensiveLineGoal(DefensiveLineHeight.STANDARD), "Counter threat", "INPUT:teamProfile.highLineCapability == true", "LEVEL1:HasCounterOpportunity");
         addAllRequiredGroup(tacticalGoals, defensiveLineGoal(DefensiveLineHeight.STANDARD), "Balanced high-line capable team", "INPUT:teamProfile.highLineCapability == true", mentalityGoal(Mentality.BALANCED));
@@ -187,17 +239,17 @@ public final class TacticalGoalTree {
     private static void addPassingGoals(List<TacticalGoal> tacticalGoals) {
         addAllRequiredGroup(tacticalGoals, passingGoal(PassingDirectness.DIRECT), "Low tactical familiarity", "LEVEL1:HasLowFitness");
         addAllRequiredGroup(tacticalGoals, passingGoal(PassingDirectness.DIRECT), "Aggressive possession opponent", "LEVEL1:IsAggressiveOpponent", "INPUT:opponentProfile.playingStyle == POSSESSION_BASED");
-        addAllRequiredGroup(tacticalGoals, passingGoal(PassingDirectness.DIRECT), "Counter opportunity with defensive mentality", "LEVEL1:HasCounterOpportunity", "MENTALITY:DEFENSIVE OR MENTALITY:CAUTIOUS");
-        addAllRequiredGroup(tacticalGoals, passingGoal(PassingDirectness.SHORTER), "Creative midfield and good familiarity", "INPUT:teamProfile.midfieldQuality == CREATIVE", "LEVEL1:HasHighFitness", "MENTALITY:POSITIVE OR MENTALITY:ATTACKING");
+        addAllRequiredGroup(tacticalGoals, passingGoal(PassingDirectness.DIRECT), "Counter opportunity with defensive mentality", "LEVEL1:HasCounterOpportunity", "COMPOSITE:DefensiveOrCautious");
+        addAllRequiredGroup(tacticalGoals, passingGoal(PassingDirectness.SHORTER), "Creative midfield and good familiarity", "INPUT:teamProfile.midfieldQuality == CREATIVE", "LEVEL1:HasHighFitness", "COMPOSITE:PositiveOrAttacking");
         addAllRequiredGroup(tacticalGoals, passingGoal(PassingDirectness.SHORTER), "Passive opponent with creative midfield", "LEVEL1:IsPassiveOpponent", "INPUT:teamProfile.midfieldQuality == CREATIVE");
         addAllRequiredGroup(tacticalGoals, passingGoal(PassingDirectness.STANDARD), "Default passing", "NOT:PASSING:DIRECT", "NOT:PASSING:SHORTER");
     }
 
     private static void addTransitionGoals(List<TacticalGoal> tacticalGoals) {
         addAllRequiredGroup(tacticalGoals, transitionGoal(TransitionAfterLossOfBall.COUNTER_PRESS), "Balanced and fast", mentalityGoal(Mentality.BALANCED), "INPUT:teamProfile.physicalProfile == FAST");
-        addAllRequiredGroup(tacticalGoals, transitionGoal(TransitionAfterLossOfBall.COUNTER_PRESS), "Attacking high press", "MENTALITY:ATTACKING OR MENTALITY:VERY_ATTACKING", pressingGoal(PressingIntensity.HIGH));
+        addAllRequiredGroup(tacticalGoals, transitionGoal(TransitionAfterLossOfBall.COUNTER_PRESS), "Attacking high press", "COMPOSITE:AttackingOrVeryAttacking", pressingGoal(PressingIntensity.HIGH));
         addAllRequiredGroup(tacticalGoals, transitionGoal(TransitionAfterLossOfBall.COUNTER_PRESS), "Pressing forwards with high press", "INPUT:teamProfile.attackType == PRESSING_ATTACKERS", pressingGoal(PressingIntensity.HIGH));
-        addAllRequiredGroup(tacticalGoals, transitionGoal(TransitionAfterLossOfBall.HOLD_SHAPE), "Counter opportunity with defensive mentality", "LEVEL1:HasCounterOpportunity", "MENTALITY:DEFENSIVE OR MENTALITY:CAUTIOUS");
+        addAllRequiredGroup(tacticalGoals, transitionGoal(TransitionAfterLossOfBall.HOLD_SHAPE), "Counter opportunity with defensive mentality", "LEVEL1:HasCounterOpportunity", "COMPOSITE:DefensiveOrCautious");
         addAllRequiredGroup(tacticalGoals, transitionGoal(TransitionAfterLossOfBall.REGROUP), "Low tactical familiarity", "LEVEL1:HasLowFitness");
         addAllRequiredGroup(tacticalGoals, transitionGoal(TransitionAfterLossOfBall.REGROUP), "Default transition", "NOT:TRANSITION:COUNTER_PRESS", "NOT:TRANSITION:HOLD_SHAPE");
     }

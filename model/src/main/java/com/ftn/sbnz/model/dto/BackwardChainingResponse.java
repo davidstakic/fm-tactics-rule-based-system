@@ -1,33 +1,43 @@
 package com.ftn.sbnz.model.dto;
 
-import com.ftn.sbnz.model.backward.TacticalGoal;
 import java.util.List;
 
 public class BackwardChainingResponse {
-    private String targetGoal;
-    private List<TacticalGoal> requirements;
+    private String targetGoalTitle;
+    private String explanation;
+    private List<BackwardRequirement> requirements;
 
     public BackwardChainingResponse() {
     }
 
-    public BackwardChainingResponse(String targetGoal, List<TacticalGoal> requirements) {
-        this.targetGoal = targetGoal;
+    public BackwardChainingResponse(String targetGoalTitle, String explanation,
+            List<BackwardRequirement> requirements) {
+        this.targetGoalTitle = targetGoalTitle;
+        this.explanation = explanation;
         this.requirements = requirements;
     }
 
-    public String getTargetGoal() {
-        return targetGoal;
+    public String getTargetGoalTitle() {
+        return targetGoalTitle;
     }
 
-    public void setTargetGoal(String targetGoal) {
-        this.targetGoal = targetGoal;
+    public void setTargetGoalTitle(String targetGoalTitle) {
+        this.targetGoalTitle = targetGoalTitle;
     }
 
-    public List<TacticalGoal> getRequirements() {
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
+    }
+
+    public List<BackwardRequirement> getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(List<TacticalGoal> requirements) {
+    public void setRequirements(List<BackwardRequirement> requirements) {
         this.requirements = requirements;
     }
 }

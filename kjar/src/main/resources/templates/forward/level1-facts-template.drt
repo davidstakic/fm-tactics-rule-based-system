@@ -4,7 +4,7 @@ operator
 value
 flag_name
 
-package com.ftn.sbnz.kjar.rules;
+package com.ftn.sbnz.kjar.rules.forward;
 
 import com.ftn.sbnz.model.enums.CompetitionType;
 import com.ftn.sbnz.model.enums.DefenseLineEngagement;
@@ -31,7 +31,7 @@ function int countWinsInForm(String formLast5Matches) {
 
 template "Level 1 Facts"
 
-rule "1_@{flag_name}"
+rule "FC L1 - @{flag_name}"
 salience 100
 no-loop true
 
@@ -47,7 +47,7 @@ then
         set@{flag_name}(true)
     };
 
-    System.out.println("[LEVEL 1] @{flag_name} = true");
+    System.out.println("[FC:L1] @{flag_name}=true");
 
 end
 

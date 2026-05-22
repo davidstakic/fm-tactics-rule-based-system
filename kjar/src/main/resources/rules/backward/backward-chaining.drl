@@ -1,4 +1,4 @@
-package com.ftn.sbnz.kjar.rules;
+package com.ftn.sbnz.kjar.rules.backward;
 
 import com.ftn.sbnz.model.backward.TacticalGoal;
 

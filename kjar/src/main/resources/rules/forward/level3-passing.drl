@@ -1,4 +1,4 @@
-package com.ftn.sbnz.kjar.rules;
+package com.ftn.sbnz.kjar.rules.forward;
 
 import com.ftn.sbnz.model.enums.Mentality;
 import com.ftn.sbnz.model.enums.MidfieldQuality;
@@ -8,9 +8,10 @@ import com.ftn.sbnz.model.forward.TacticalAssistantInput;
 import com.ftn.sbnz.model.forward.Level1Facts;
 import com.ftn.sbnz.model.forward.Level2Facts;
 import com.ftn.sbnz.model.forward.Level3Facts;
+import com.ftn.sbnz.model.forward.factory.TacticalExplanationFactory;
 
 
-rule "Direct passing - low chemistry"
+rule "FC L3 - Passing DIRECT - low tactical fitness"
     salience 30
     no-loop true
 
@@ -27,11 +28,15 @@ then
     modify($facts) {
         setPassingDirectness( PassingDirectness.DIRECT );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.passing(PassingDirectness.DIRECT, "the team's tactical fitness is low, so a simpler and more direct route is safer"));
+    update($facts);
+
+    System.out.println("[FC:L3] passingDirectness=DIRECT | reason=low tactical fitness");
 
 end
 
 
-rule "Direct passing - aggressive possession opponent"
+rule "FC L3 - Passing DIRECT - aggressive possession opponent"
     salience 29
     no-loop true
 
@@ -52,11 +57,15 @@ then
     modify($facts) {
         setPassingDirectness( PassingDirectness.DIRECT );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.passing(PassingDirectness.DIRECT, "the opponent presses aggressively and leaves space to attack quickly"));
+    update($facts);
+
+    System.out.println("[FC:L3] passingDirectness=DIRECT | reason=aggressive possession opponent");
 
 end
 
 
-rule "Direct passing - counter opportunity and defensive mentality"
+rule "FC L3 - Passing DIRECT - counter opportunity with defensive mentality"
     salience 28
     no-loop true
 
@@ -79,11 +88,15 @@ then
     modify($facts) {
         setPassingDirectness( PassingDirectness.DIRECT );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.passing(PassingDirectness.DIRECT, "there is space to counter and the selected mentality is more protective"));
+    update($facts);
+
+    System.out.println("[FC:L3] passingDirectness=DIRECT | reason=counter opportunity with defensive mentality");
 
 end
 
 
-rule "Short passing - creative midfield and good chemistry"
+rule "FC L3 - Passing SHORTER - creative midfield and good fitness"
     salience 27
     no-loop true
 
@@ -110,11 +123,15 @@ then
     modify($facts) {
         setPassingDirectness( PassingDirectness.SHORTER );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.passing(PassingDirectness.SHORTER, "the midfield is creative, the team is fit, and the mentality supports proactive possession"));
+    update($facts);
+
+    System.out.println("[FC:L3] passingDirectness=SHORTER | reason=creative midfield and good fitness");
 
 end
 
 
-rule "Short passing - passive opponent"
+rule "FC L3 - Passing SHORTER - passive opponent"
     salience 26
     no-loop true
 
@@ -135,11 +152,15 @@ then
     modify($facts) {
         setPassingDirectness( PassingDirectness.SHORTER );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.passing(PassingDirectness.SHORTER, "a passive opponent can be moved around through patient combinations"));
+    update($facts);
+
+    System.out.println("[FC:L3] passingDirectness=SHORTER | reason=creative midfield against passive opponent");
 
 end
 
 
-rule "Default passing"
+rule "FC L3 - Passing STANDARD - default"
     salience 10
 
 when
@@ -151,5 +172,9 @@ then
     modify($facts) {
         setPassingDirectness( PassingDirectness.STANDARD );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.passing(PassingDirectness.STANDARD, "there is no strong reason to force a very short or very direct passing style"));
+    update($facts);
+
+    System.out.println("[FC:L3] passingDirectness=STANDARD | reason=default");
 
 end

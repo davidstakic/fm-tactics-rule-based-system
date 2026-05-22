@@ -1,7 +1,7 @@
 package com.ftn.sbnz.service;
 
-import com.ftn.sbnz.kjar.BackwardChainingKieBaseFactory;
-import com.ftn.sbnz.kjar.ForwardChainingKieBaseFactory;
+import com.ftn.sbnz.kjar.factory.BackwardChainingKieBaseFactory;
+import com.ftn.sbnz.kjar.factory.ForwardChainingKieBaseFactory;
 import org.kie.api.KieBase;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

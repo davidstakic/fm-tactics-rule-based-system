@@ -1,6 +1,9 @@
-package com.ftn.sbnz.kjar;
+package com.ftn.sbnz.kjar.factory;
 
 import java.io.InputStream;
+
+import com.ftn.sbnz.kjar.KjarApplication;
+import com.ftn.sbnz.kjar.template.TemplateRuleLoader;
 import org.kie.api.KieBase;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
@@ -11,13 +14,13 @@ import org.kie.internal.utils.KieHelper;
 
 public final class ForwardChainingKieBaseFactory {
     private static final String[] FORWARD_CHAINING_RULE_FILES = {
-            "rules/level1.drl",
-            "rules/level3-defensive-line.drl",
-            "rules/level3-passing.drl",
-            "rules/level3-pressing.drl",
-            "rules/level3-transition.drl",
-            "rules/level2-formation-selection.drl",
-            "cep/match-events.drl"
+            "rules/forward/level1-facts.drl",
+            "rules/forward/level3-defensive-line.drl",
+            "rules/forward/level3-passing.drl",
+            "rules/forward/level3-pressing.drl",
+            "rules/forward/level3-transition.drl",
+            "rules/forward/level2-formation-selection.drl",
+            "rules/cep/cep.drl"
     };
 
     private ForwardChainingKieBaseFactory() {
@@ -35,13 +38,13 @@ public final class ForwardChainingKieBaseFactory {
         }
 
         kieHelper.addContent(
-                TemplateRuleLoader.compileTemplate("/templates/level1-template.drt", "/templates/level1-data.xls"),
+                TemplateRuleLoader.compileTemplate("/templates/forward/level1-facts-template.drt", "/templates/data/level1-facts-data.xls"),
                 ResourceType.DRL);
         kieHelper.addContent(
-                TemplateRuleLoader.compileTemplate("/templates/mentality-template.drt", "/templates/mentality-data.xls"),
+                TemplateRuleLoader.compileTemplate("/templates/forward/level2-mentality-template.drt", "/templates/data/level2-mentality-data.xls"),
                 ResourceType.DRL);
         kieHelper.addContent(
-                TemplateRuleLoader.compileTemplate("/templates/formations-template.drt", "/templates/formations-data.xls"),
+                TemplateRuleLoader.compileTemplate("/templates/forward/level2-formation-scoring-template.drt", "/templates/data/level2-formation-scoring-data.xls"),
                 ResourceType.DRL);
 
         Results results = kieHelper.verify();

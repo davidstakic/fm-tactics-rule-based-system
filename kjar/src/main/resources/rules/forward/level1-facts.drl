@@ -1,4 +1,4 @@
-package com.ftn.sbnz.kjar.rules;
+package com.ftn.sbnz.kjar.rules.forward;
 
 import com.ftn.sbnz.model.enums.CompetitionType;
 import com.ftn.sbnz.model.enums.DefenseLineEngagement;
@@ -10,7 +10,7 @@ import com.ftn.sbnz.model.forward.TacticalAssistantInput;
 import com.ftn.sbnz.model.forward.Level1Facts;
 
 
-rule "Medium chemistry"
+rule "FC L1 - Medium fitness"
     salience 95
     no-loop true
 
@@ -26,12 +26,12 @@ then
         setHasMediumFitness( true )
     };
 
-    System.out.println( "[LEVEL 1] SREDNJA_UIGRANOST = true" );
+    System.out.println("[FC:L1] HasMediumFitness=true | reason=medium tactical fitness");
 
 end
 
 
-rule "Difficult away match"
+rule "FC L1 - Difficult away match"
     salience 90
     no-loop true
 
@@ -50,10 +50,12 @@ then
         setIsDifficultAwayMatch( true )
     };
 
+    System.out.println("[FC:L1] IsDifficultAwayMatch=true | reason=away underdog in high importance match");
+
 end
 
 
-rule "Must win"
+rule "FC L1 - Must win"
     salience 95
     no-loop true
 
@@ -70,10 +72,12 @@ then
         setMustWin( true )
     };
 
+    System.out.println("[FC:L1] MustWin=true | reason=high importance cup match");
+
 end
 
 
-rule "Dominant position"
+rule "FC L1 - Dominant position"
     salience 90
     no-loop true
 
@@ -91,10 +95,12 @@ then
         setHasDominantPosition( true )
     };
 
+    System.out.println("[FC:L1] HasDominantPosition=true | reason=favorite at home");
+
 end
 
 
-rule "Can settle for draw"
+rule "FC L1 - Can settle for draw"
     salience 90
     no-loop true
 
@@ -113,10 +119,12 @@ then
         setCanDrawMatch( true )
     };
 
+    System.out.println("[FC:L1] CanDrawMatch=true | reason=even league match with medium importance");
+
 end
 
 
-rule "Careful match"
+rule "FC L1 - Cautious match"
     salience 90
     no-loop true
 
@@ -134,10 +142,12 @@ then
         setIsCautiousMatch( true )
     };
 
+    System.out.println("[FC:L1] IsCautiousMatch=true | reason=underdog in high importance match");
+
 end
 
 
-rule "Counter attack opportunity"
+rule "FC L1 - Counter opportunity"
     salience 95
     no-loop true
 
@@ -155,10 +165,12 @@ then
         setHasCounterOpportunity( true )
     };
 
+    System.out.println("[FC:L1] HasCounterOpportunity=true | reason=opponent defensive weakness");
+
 end
 
 
-rule "Aggressive opponent"
+rule "FC L1 - Aggressive opponent"
     salience 95
     no-loop true
 
@@ -175,10 +187,12 @@ then
         setIsAggressiveOpponent( true )
     };
 
+    System.out.println("[FC:L1] IsAggressiveOpponent=true | reason=high press possession opponent");
+
 end
 
 
-rule "Passive opponent"
+rule "FC L1 - Passive opponent"
     salience 95
     no-loop true
 
@@ -194,5 +208,7 @@ then
     modify($facts) {
         setIsPassiveOpponent( true )
     };
+
+    System.out.println("[FC:L1] IsPassiveOpponent=true | reason=low block non-counter opponent");
 
 end
