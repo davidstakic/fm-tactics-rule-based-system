@@ -5,7 +5,7 @@ formation_group
 number_of_points
 description
 
-package com.ftn.sbnz.kjar.rules;
+package com.ftn.sbnz.kjar.rules.forward;
 
 import java.util.List;
 import com.ftn.sbnz.model.enums.AttackType;
@@ -16,7 +16,7 @@ import com.ftn.sbnz.model.forward.Level1Facts;
 
 template "Level 2 Formation scoring"
 
-rule "2_scoring_@{description}"
+rule "FC L2 - Formation score - @{description}"
 salience 60
 no-loop true
 
@@ -59,6 +59,12 @@ then
     }
 
     insert("formation-scoring:@{description}");
+
+    System.out.println(
+        "[FC:L2] formationScoreDelta=@{number_of_points}"
+        + " | formations=" + java.util.Arrays.toString(formations)
+        + " | reason=@{description}"
+    );
 
 end
 

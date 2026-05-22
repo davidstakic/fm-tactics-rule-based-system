@@ -5,16 +5,17 @@ mentality
 priority
 description
 
-package com.ftn.sbnz.kjar.rules;
+package com.ftn.sbnz.kjar.rules.forward;
 
 import com.ftn.sbnz.model.enums.Mentality;
 import com.ftn.sbnz.model.forward.TacticalAssistantInput;
 import com.ftn.sbnz.model.forward.Level1Facts;
 import com.ftn.sbnz.model.forward.Level2Facts;
+import com.ftn.sbnz.model.forward.factory.TacticalExplanationFactory;
 
 template "Level 2 Choosing mentality"
 
-rule "2_mentality_@{mentality}_@{priority}"
+rule "FC L2 - Mentality @{mentality} - priority @{priority}"
 salience @{priority}
 no-loop true
 
@@ -39,10 +40,18 @@ then
         );
     };
 
+    $existing.addExplanationStep(
+        TacticalExplanationFactory.mentality(
+            Mentality.@{mentality},
+            "@{description}"
+        )
+    );
+    update($existing);
+
     System.out.println(
-        "[LEVEL 2] Mentality = @{mentality}"
-        + " (priority: @{priority})"
-        + " - @{description}"
+        "[FC:L2] selectedMentality=@{mentality}"
+        + " | priority=@{priority}"
+        + " | reason=@{description}"
     );
 
 end

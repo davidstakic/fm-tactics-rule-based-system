@@ -6,19 +6,24 @@ import java.util.List;
 public class TacticalRecommendation {
     private BasicTacticalSettings basicSettings;
     private KeyTeamInstructions teamInstructions;
-    private String stepByStepExplanation;
-    private List<String> potentialRisks;
+    private List<TacticalExplanationStep> explanationSteps;
+    private List<TacticalAdvantage> advantages;
+    private List<TacticalRisk> risks;
 
     public TacticalRecommendation() {
-        this.potentialRisks = new ArrayList<>();
+        this.explanationSteps = new ArrayList<>();
+        this.advantages = new ArrayList<>();
+        this.risks = new ArrayList<>();
     }
 
     public TacticalRecommendation(BasicTacticalSettings basicSettings, KeyTeamInstructions teamInstructions,
-            String stepByStepExplanation, List<String> potentialRisks) {
+            List<TacticalExplanationStep> explanationSteps, List<TacticalAdvantage> advantages,
+            List<TacticalRisk> risks) {
         this.basicSettings = basicSettings;
         this.teamInstructions = teamInstructions;
-        this.stepByStepExplanation = stepByStepExplanation;
-        this.potentialRisks = potentialRisks != null ? potentialRisks : new ArrayList<>();
+        this.explanationSteps = explanationSteps != null ? explanationSteps : new ArrayList<>();
+        this.advantages = advantages != null ? advantages : new ArrayList<>();
+        this.risks = risks != null ? risks : new ArrayList<>();
     }
 
     public BasicTacticalSettings getBasicSettings() {
@@ -37,24 +42,40 @@ public class TacticalRecommendation {
         this.teamInstructions = teamInstructions;
     }
 
-    public String getStepByStepExplanation() {
-        return stepByStepExplanation;
+    public List<TacticalExplanationStep> getExplanationSteps() {
+        return explanationSteps;
     }
 
-    public void setStepByStepExplanation(String stepByStepExplanation) {
-        this.stepByStepExplanation = stepByStepExplanation;
+    public void setExplanationSteps(List<TacticalExplanationStep> explanationSteps) {
+        this.explanationSteps = explanationSteps != null ? explanationSteps : new ArrayList<>();
     }
 
-    public List<String> getPotentialRisks() {
-        return potentialRisks;
+    public List<TacticalAdvantage> getAdvantages() {
+        return advantages;
     }
 
-    public void setPotentialRisks(List<String> potentialRisks) {
-        this.potentialRisks = potentialRisks;
+    public void setAdvantages(List<TacticalAdvantage> advantages) {
+        this.advantages = advantages != null ? advantages : new ArrayList<>();
     }
 
-    public void addPotentialRisk(String risk) {
-        this.potentialRisks.add(risk);
+    public List<TacticalRisk> getRisks() {
+        return risks;
+    }
+
+    public void setRisks(List<TacticalRisk> risks) {
+        this.risks = risks != null ? risks : new ArrayList<>();
+    }
+
+    public void addExplanationStep(TacticalExplanationStep step) {
+        this.explanationSteps.add(step);
+    }
+
+    public void addAdvantage(TacticalAdvantage advantage) {
+        this.advantages.add(advantage);
+    }
+
+    public void addRisk(TacticalRisk risk) {
+        this.risks.add(risk);
     }
 
     @Override
@@ -62,8 +83,9 @@ public class TacticalRecommendation {
         return "TacticalRecommendation{" +
                 "basicSettings=" + basicSettings +
                 ", teamInstructions=" + teamInstructions +
-                ", stepByStepExplanation='" + stepByStepExplanation + '\'' +
-                ", potentialRisks=" + potentialRisks +
+                ", explanationSteps=" + explanationSteps +
+                ", advantages=" + advantages +
+                ", risks=" + risks +
                 '}';
     }
 }

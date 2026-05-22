@@ -4,20 +4,25 @@ import com.ftn.sbnz.model.enums.DefensiveLineHeight;
 import com.ftn.sbnz.model.enums.PassingDirectness;
 import com.ftn.sbnz.model.enums.PressingIntensity;
 import com.ftn.sbnz.model.enums.TransitionAfterLossOfBall;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Level3Facts {
     private PressingIntensity pressingIntensity;
     private DefensiveLineHeight defensiveLineHeight;
     private PassingDirectness passingDirectness;
     private TransitionAfterLossOfBall transitionAfterLossOfBall;
+    private List<TacticalExplanationStep> explanationSteps;
 
     public Level3Facts() {
+        this.explanationSteps = new ArrayList<>();
     }
 
     public Level3Facts(PressingIntensity pressingIntensity,
             DefensiveLineHeight defensiveLineHeight,
             PassingDirectness passingDirectness,
             TransitionAfterLossOfBall transitionAfterLossOfBall) {
+        this();
         this.pressingIntensity = pressingIntensity;
         this.defensiveLineHeight = defensiveLineHeight;
         this.passingDirectness = passingDirectness;
@@ -56,6 +61,18 @@ public class Level3Facts {
         this.transitionAfterLossOfBall = transitionAfterLossOfBall;
     }
 
+    public List<TacticalExplanationStep> getExplanationSteps() {
+        return explanationSteps;
+    }
+
+    public void setExplanationSteps(List<TacticalExplanationStep> explanationSteps) {
+        this.explanationSteps = explanationSteps != null ? explanationSteps : new ArrayList<>();
+    }
+
+    public void addExplanationStep(TacticalExplanationStep explanationStep) {
+        this.explanationSteps.add(explanationStep);
+    }
+
     @Override
     public String toString() {
         return "Level3Facts{" +
@@ -63,6 +80,7 @@ public class Level3Facts {
                 ", defensiveLineHeight=" + defensiveLineHeight +
                 ", passingDirectness=" + passingDirectness +
                 ", transitionAfterLossOfBall=" + transitionAfterLossOfBall +
+                ", explanationSteps=" + explanationSteps +
                 '}';
     }
 }

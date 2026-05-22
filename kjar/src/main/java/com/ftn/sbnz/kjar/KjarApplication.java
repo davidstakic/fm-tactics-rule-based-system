@@ -12,6 +12,9 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.KieBase;
 import org.kie.internal.utils.KieHelper;
 
+import com.ftn.sbnz.kjar.backward.TacticalGoalPrinter;
+import com.ftn.sbnz.kjar.backward.TacticalGoalTree;
+import com.ftn.sbnz.kjar.template.TemplateRuleLoader;
 import com.ftn.sbnz.model.backward.TacticalGoal;
 import com.ftn.sbnz.model.cep.MatchStateEvent;
 import com.ftn.sbnz.model.enums.AttackType;
@@ -39,30 +42,30 @@ import com.ftn.sbnz.model.forward.TeamProfile;
 public class KjarApplication {
 
     private static final String[] RULE_FILES = {
-            "rules/level1.drl",
-            "rules/level3-defensive-line.drl",
-            "rules/level3-passing.drl",
-            "rules/level3-pressing.drl",
-            "rules/level3-transition.drl",
-            "rules/level2-formation-selection.drl",
-            "rules/backward-tactical-goals.drl",
-            "cep/match-events.drl"
+            "rules/forward/level1-facts.drl",
+            "rules/forward/level3-defensive-line.drl",
+            "rules/forward/level3-passing.drl",
+            "rules/forward/level3-pressing.drl",
+            "rules/forward/level3-transition.drl",
+            "rules/forward/level2-formation-selection.drl",
+            "rules/backward/backward-chaining.drl",
+            "rules/cep/cep.drl"
     };
 
     public static void main(String[] args) {
         System.out.println("Starting kjar forward chaining demo...");
 
         String level1Rules = TemplateRuleLoader.compileTemplate(
-                "/templates/level1-template.drt",
-                "/templates/level1-data.xls");
+                "/templates/forward/level1-facts-template.drt",
+                "/templates/data/level1-facts-data.xls");
 
         String mentalityRules = TemplateRuleLoader.compileTemplate(
-                "/templates/mentality-template.drt",
-                "/templates/mentality-data.xls");
+                "/templates/forward/level2-mentality-template.drt",
+                "/templates/data/level2-mentality-data.xls");
 
         String formationRules = TemplateRuleLoader.compileTemplate(
-                "/templates/formations-template.drt",
-                "/templates/formations-data.xls");
+                "/templates/forward/level2-formation-scoring-template.drt",
+                "/templates/data/level2-formation-scoring-data.xls");
 
         KieHelper kieHelper = new KieHelper();
 

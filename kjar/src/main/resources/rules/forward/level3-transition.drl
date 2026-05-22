@@ -1,4 +1,4 @@
-package com.ftn.sbnz.kjar.rules;
+package com.ftn.sbnz.kjar.rules.forward;
 
 import com.ftn.sbnz.model.enums.AttackType;
 import com.ftn.sbnz.model.enums.Mentality;
@@ -9,9 +9,10 @@ import com.ftn.sbnz.model.forward.TacticalAssistantInput;
 import com.ftn.sbnz.model.forward.Level1Facts;
 import com.ftn.sbnz.model.forward.Level2Facts;
 import com.ftn.sbnz.model.forward.Level3Facts;
+import com.ftn.sbnz.model.forward.factory.TacticalExplanationFactory;
 
 
-rule "Counter press - balanced and fast"
+rule "FC L3 - Transition COUNTER_PRESS - balanced fast team"
     salience 20
     no-loop true
 
@@ -24,7 +25,7 @@ when
     teamProfile.physicalProfile == PhysicalProfile.FAST
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     transitionAfterLossOfBall == null
      )
 
@@ -34,11 +35,15 @@ then
         TransitionAfterLossOfBall.COUNTER_PRESS
          );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.transition(TransitionAfterLossOfBall.COUNTER_PRESS, "the team is balanced, quick, and can react immediately after losing possession"));
+    update($facts);
+
+    System.out.println("[FC:L3] transitionAfterLossOfBall=COUNTER_PRESS | reason=balanced mentality with fast team");
 
 end
 
 
-rule "Counter press - attacking mentality"
+rule "FC L3 - Transition COUNTER_PRESS - attacking high press"
     salience 19
     no-loop true
 
@@ -60,11 +65,15 @@ then
         TransitionAfterLossOfBall.COUNTER_PRESS
          );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.transition(TransitionAfterLossOfBall.COUNTER_PRESS, "the attacking mentality is already paired with high pressing"));
+    update($facts);
+
+    System.out.println("[FC:L3] transitionAfterLossOfBall=COUNTER_PRESS | reason=attacking mentality with high press");
 
 end
 
 
-rule "Counter press - pressing forwards"
+rule "FC L3 - Transition COUNTER_PRESS - pressing forwards"
     salience 18
     no-loop true
 
@@ -84,11 +93,15 @@ then
         TransitionAfterLossOfBall.COUNTER_PRESS
          );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.transition(TransitionAfterLossOfBall.COUNTER_PRESS, "the forwards are suited to pressing and the team is already pressing high"));
+    update($facts);
+
+    System.out.println("[FC:L3] transitionAfterLossOfBall=COUNTER_PRESS | reason=pressing attackers with high press");
 
 end
 
 
-rule "Hold shape - counter opportunity"
+rule "FC L3 - Transition HOLD_SHAPE - counter opportunity"
     salience 17
     no-loop true
 
@@ -103,7 +116,7 @@ when
     selectedMentality == Mentality.CAUTIOUS
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     transitionAfterLossOfBall == null
      )
 
@@ -113,11 +126,15 @@ then
         TransitionAfterLossOfBall.HOLD_SHAPE
          );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.transition(TransitionAfterLossOfBall.HOLD_SHAPE, "the team can counter, but the mentality is protective, so structure matters"));
+    update($facts);
+
+    System.out.println("[FC:L3] transitionAfterLossOfBall=HOLD_SHAPE | reason=counter opportunity with defensive mentality");
 
 end
 
 
-rule "Regroup - low chemistry"
+rule "FC L3 - Transition REGROUP - low tactical fitness"
     salience 16
     no-loop true
 
@@ -126,7 +143,7 @@ when
     hasLowFitness == true
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     transitionAfterLossOfBall == null
      )
 
@@ -136,11 +153,15 @@ then
         TransitionAfterLossOfBall.REGROUP
          );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.transition(TransitionAfterLossOfBall.REGROUP, "the team's tactical fitness is low and a safer reset reduces chaos"));
+    update($facts);
+
+    System.out.println("[FC:L3] transitionAfterLossOfBall=REGROUP | reason=low tactical fitness");
 
 end
 
 
-rule "Default transition"
+rule "FC L3 - Transition REGROUP - default"
     salience 10
 
 when
@@ -154,5 +175,9 @@ then
         TransitionAfterLossOfBall.REGROUP
          );
     };
+    $facts.addExplanationStep(TacticalExplanationFactory.transition(TransitionAfterLossOfBall.REGROUP, "there is no strong reason to counter-press, so regrouping is the safer default"));
+    update($facts);
+
+    System.out.println("[FC:L3] transitionAfterLossOfBall=REGROUP | reason=default");
 
 end

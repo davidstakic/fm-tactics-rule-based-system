@@ -1,6 +1,8 @@
-package com.ftn.sbnz.kjar;
+package com.ftn.sbnz.kjar.factory;
 
 import java.io.InputStream;
+
+import com.ftn.sbnz.kjar.backward.TacticalGoalTree;
 import org.kie.api.KieBase;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
@@ -9,7 +11,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
 public final class BackwardChainingKieBaseFactory {
-    private static final String BACKWARD_CHAINING_RULE_FILE = "/rules/backward-tactical-goals.drl";
+    private static final String BACKWARD_CHAINING_RULE_FILE = "/rules/backward/backward-chaining.drl";
 
     private BackwardChainingKieBaseFactory() {
     }

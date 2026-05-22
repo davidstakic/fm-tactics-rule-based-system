@@ -1,4 +1,4 @@
-package com.ftn.sbnz.kjar;
+package com.ftn.sbnz.kjar.backward;
 
 import java.util.ArrayList;
 import java.util.Comparator;

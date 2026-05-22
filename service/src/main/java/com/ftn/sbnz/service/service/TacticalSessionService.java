@@ -11,10 +11,16 @@ import com.ftn.sbnz.model.forward.Level1Facts;
 import com.ftn.sbnz.model.forward.Level2Facts;
 import com.ftn.sbnz.model.forward.Level3Facts;
 import com.ftn.sbnz.model.forward.TacticalAssistantInput;
+import com.ftn.sbnz.model.forward.TacticalAdvantage;
+import com.ftn.sbnz.model.forward.TacticalExplanationStep;
 import com.ftn.sbnz.model.forward.TacticalRecommendation;
+import com.ftn.sbnz.model.forward.TacticalRisk;
+import com.ftn.sbnz.model.forward.factory.TacticalExplanationFactory;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -56,7 +62,7 @@ public class TacticalSessionService {
         activeSession = kieSession;
         matchStarted = false;
 
-        return toRecommendation(level2Facts, level3Facts);
+        return toRecommendation(level2Facts, level3Facts, selectedFormationScore(kieSession, level2Facts.getSelectedFormation()));
     }
 
     public synchronized List<CEPRecommendation> startMatch() {
@@ -120,7 +126,21 @@ public class TacticalSessionService {
         }
     }
 
-    private TacticalRecommendation toRecommendation(Level2Facts level2Facts, Level3Facts level3Facts) {
+    private FormationScore selectedFormationScore(KieSession kieSession, Formation selectedFormation) {
+        if (selectedFormation == null) {
+            return null;
+        }
+        for (Object object : kieSession.getObjects(new ClassObjectFilter(FormationScore.class))) {
+            FormationScore score = (FormationScore) object;
+            if (selectedFormation.equals(score.getFormation())) {
+                return score;
+            }
+        }
+        return null;
+    }
+
+    private TacticalRecommendation toRecommendation(Level2Facts level2Facts, Level3Facts level3Facts,
+            FormationScore selectedFormationScore) {
         TacticalRecommendation recommendation = new TacticalRecommendation();
         recommendation.setBasicSettings(new BasicTacticalSettings(
                 level2Facts.getSelectedFormation(),
@@ -130,7 +150,35 @@ public class TacticalSessionService {
                 level3Facts.getPressingIntensity(),
                 level3Facts.getDefensiveLineHeight(),
                 level3Facts.getTransitionAfterLossOfBall()));
-        recommendation.setStepByStepExplanation(null);
+
+        if (level2Facts.getSelectedFormation() != null) {
+            recommendation.addExplanationStep(TacticalExplanationFactory.formation(
+                    level2Facts.getSelectedFormation(),
+                    selectedFormationScore != null ? selectedFormationScore.getScoreBreakdown() : null));
+        }
+        for (TacticalExplanationStep step : level2Facts.getExplanationSteps()) {
+            recommendation.addExplanationStep(step);
+        }
+        for (TacticalExplanationStep step : level3Facts.getExplanationSteps()) {
+            recommendation.addExplanationStep(step);
+        }
+        collectTradeoffs(recommendation);
         return recommendation;
+    }
+
+    private void collectTradeoffs(TacticalRecommendation recommendation) {
+        Map<String, TacticalExplanationStep> finalStepByDecision = new LinkedHashMap<>();
+        for (TacticalExplanationStep step : recommendation.getExplanationSteps()) {
+            finalStepByDecision.put(step.getDecision(), step);
+        }
+
+        for (TacticalExplanationStep step : finalStepByDecision.values()) {
+            for (TacticalAdvantage advantage : step.getAdvantages()) {
+                recommendation.addAdvantage(advantage);
+            }
+            for (TacticalRisk risk : step.getRisks()) {
+                recommendation.addRisk(risk);
+            }
+        }
     }
 }
