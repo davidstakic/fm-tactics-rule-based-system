@@ -45,7 +45,7 @@ public class BackwardChainingService {
 
             return new BackwardChainingResponse(
                     toTargetGoalTitle(targetGoal.trim()),
-                    "These are the conditions that make this tactical idea a good fit.",
+                    "These are supporting conditions for this tactical idea. They are not all required at the same time.",
                     toBackwardRequirements(requirements));
         } finally {
             kieSession.dispose();

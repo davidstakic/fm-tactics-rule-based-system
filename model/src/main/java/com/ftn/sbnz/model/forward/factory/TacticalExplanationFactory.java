@@ -18,7 +18,6 @@ public final class TacticalExplanationFactory {
     public static TacticalExplanationStep formation(Formation formation, Map<String, Integer> scoreBreakdown) {
         String reasons = formationReasons(scoreBreakdown);
         TacticalExplanationStep step = new TacticalExplanationStep(
-                "Level 2",
                 "Formation",
                 display(formation),
                 "The formation was selected because " + reasons + ".");
@@ -28,7 +27,6 @@ public final class TacticalExplanationFactory {
 
     public static TacticalExplanationStep mentality(Mentality mentality, String reason) {
         TacticalExplanationStep step = new TacticalExplanationStep(
-                "Level 2",
                 "Mentality",
                 display(mentality),
                 "The mentality was chosen because " + reason + ".");
@@ -62,7 +60,6 @@ public final class TacticalExplanationFactory {
 
     public static TacticalExplanationStep passing(PassingDirectness passing, String reason) {
         TacticalExplanationStep step = new TacticalExplanationStep(
-                "Level 3",
                 "Passing",
                 display(passing),
                 "Passing directness was chosen because " + reason + ".");
@@ -86,7 +83,6 @@ public final class TacticalExplanationFactory {
 
     public static TacticalExplanationStep pressing(PressingIntensity pressing, String reason) {
         TacticalExplanationStep step = new TacticalExplanationStep(
-                "Level 3",
                 "Pressing",
                 display(pressing),
                 "Pressing intensity was chosen because " + reason + ".");
@@ -110,7 +106,6 @@ public final class TacticalExplanationFactory {
 
     public static TacticalExplanationStep defensiveLine(DefensiveLineHeight defensiveLine, String reason) {
         TacticalExplanationStep step = new TacticalExplanationStep(
-                "Level 3",
                 "Defensive line",
                 display(defensiveLine),
                 "Defensive line height was chosen because " + reason + ".");
@@ -134,7 +129,6 @@ public final class TacticalExplanationFactory {
 
     public static TacticalExplanationStep transition(TransitionAfterLossOfBall transition, String reason) {
         TacticalExplanationStep step = new TacticalExplanationStep(
-                "Level 3",
                 "Transition after losing the ball",
                 display(transition),
                 "The transition instruction was chosen because " + reason + ".");

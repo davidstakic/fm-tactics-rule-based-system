@@ -1,0 +1,42 @@
+<section class="recommendation-panel">
+  <div class="match-plan-grid">
+    <section class="formation-panel">
+      <div class="formation-title">
+        <span>Formation</span>
+        <strong>{{ displayValue(recommendation.basicSettings?.recommendedFormation) }}</strong>
+      </div>
+      <img
+        [src]="formationImageUrl()"
+        [alt]="displayValue(recommendation.basicSettings?.recommendedFormation) + ' formation'"
+      >
+    </section>
+
+    <section class="instructions-panel">
+      <article class="instruction-card" *ngFor="let instruction of instructionViews()">
+        <span>{{ instruction.label }}</span>
+        <strong>{{ instruction.value }}</strong>
+        <p *ngIf="instruction.explanation">{{ instruction.explanation }}</p>
+      </article>
+    </section>
+  </div>
+
+  <div class="notes-grid">
+    <section class="advantage-panel">
+      <h3>Advantages</h3>
+      <p class="empty" *ngIf="!hasNotes(recommendation.advantages)">No advantages returned.</p>
+      <article *ngFor="let advantage of recommendation.advantages">
+        <strong>{{ advantage.title }}</strong>
+        <p>{{ advantage.description }}</p>
+      </article>
+    </section>
+
+    <section class="risk-panel">
+      <h3>Risks</h3>
+      <p class="empty" *ngIf="!hasNotes(recommendation.risks)">No risks returned.</p>
+      <article *ngFor="let risk of recommendation.risks">
+        <strong>{{ risk.title }}</strong>
+        <p>{{ risk.description }}</p>
+      </article>
+    </section>
+  </div>
+</section>
