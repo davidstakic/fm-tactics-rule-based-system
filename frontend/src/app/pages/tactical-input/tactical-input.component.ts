@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { LiveMatchMonitorComponent } from '../../components/live-match-monitor/live-match-monitor.component';
 import { TacticalRecommendationComponent } from '../../components/tactical-recommendation/tactical-recommendation.component';
 import {
   AttackType,
@@ -21,7 +22,7 @@ import { ForwardChainingApiService } from '../../services/forward-chaining-api.s
 @Component({
   selector: 'app-tactical-input',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TacticalRecommendationComponent],
+  imports: [CommonModule, ReactiveFormsModule, TacticalRecommendationComponent, LiveMatchMonitorComponent],
   templateUrl: './tactical-input.component.html',
   styleUrl: './tactical-input.component.css',
 })

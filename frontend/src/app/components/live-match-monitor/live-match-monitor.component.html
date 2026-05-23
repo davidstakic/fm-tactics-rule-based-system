@@ -1,0 +1,72 @@
+<section class="live-match-panel">
+  <div class="panel-header">
+    <div>
+      <h2>Live Match Adjustments</h2>
+      <p>Start the match after generating a tactic, then send match states when something important changes.</p>
+    </div>
+
+    <button
+      class="primary-button"
+      type="button"
+      [disabled]="isStarting || matchStarted"
+      (click)="startMatch()"
+    >
+      {{ matchStarted ? 'Match Started' : isStarting ? 'Starting...' : 'Start Match' }}
+    </button>
+  </div>
+
+  <p class="status-banner" *ngIf="statusMessage">{{ statusMessage }}</p>
+  <p class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <form class="match-state-form" *ngIf="matchStarted" [formGroup]="form" (ngSubmit)="submitMatchState()">
+    <section class="input-panel">
+      <h3>Match State</h3>
+
+      <div class="input-grid">
+        <label>
+          Current Minute
+          <input type="number" min="0" max="120" class="input" formControlName="currentMinute">
+          <span class="field-error" *ngIf="isInvalid('currentMinute')">Use a value from 0 to 120.</span>
+        </label>
+
+        <label>
+          Current Result
+          <select class="input" formControlName="currentResult">
+            <option *ngFor="let option of resultOptions" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </label>
+
+        <label>
+          Own Team Red Cards
+          <input type="number" min="0" class="input" formControlName="ownTeamRedCards">
+          <span class="field-error" *ngIf="isInvalid('ownTeamRedCards')">Use zero or more.</span>
+        </label>
+
+        <label>
+          Opponent Red Cards
+          <input type="number" min="0" class="input" formControlName="opponentRedCards">
+          <span class="field-error" *ngIf="isInvalid('opponentRedCards')">Use zero or more.</span>
+        </label>
+      </div>
+
+      <button class="primary-button state-button" type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Sending...' : 'Send Match State' }}
+      </button>
+    </section>
+  </form>
+
+  <section class="recommendations-grid" *ngIf="recommendations.length">
+    <article class="adjustment-card" *ngFor="let recommendation of recommendations">
+      <span>{{ displayValue(recommendation.eventType) }}</span>
+      <h3>{{ recommendation.eventDescription }}</h3>
+      <p>{{ recommendation.explanation }}</p>
+
+      <div class="adjustments">
+        <div *ngFor="let instruction of adjustedInstructions(recommendation)">
+          <small>{{ instruction.label }}</small>
+          <strong>{{ displayValue(instruction.value) }}</strong>
+        </div>
+      </div>
+    </article>
+  </section>
+</section>
