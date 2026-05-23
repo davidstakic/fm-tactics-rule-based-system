@@ -206,3 +206,24 @@ then
     System.out.println("[FC:L3] pressingIntensity=MEDIUM | reason=reduce high press against aggressive opponent");
 
 end
+
+
+rule "FC L3 - Pressing MEDIUM - default"
+    salience 10
+    no-loop true
+
+when
+    $facts : Level3Facts(
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.MEDIUM );
+    };
+    $facts.addExplanationStep(TacticalExplanationFactory.pressing(PressingIntensity.MEDIUM, "there is no stronger reason to use either a very aggressive or very passive press"));
+    update($facts);
+
+    System.out.println("[FC:L3] pressingIntensity=MEDIUM | reason=default");
+
+end

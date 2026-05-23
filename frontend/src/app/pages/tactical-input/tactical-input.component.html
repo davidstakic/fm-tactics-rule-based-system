@@ -1,0 +1,110 @@
+<div class="tactical-page">
+  <div class="page-shell">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="input-form">
+      <div class="input-grid">
+        <section class="input-panel team-panel">
+          <h2>
+            Own Team Profile
+          </h2>
+
+          <label>Team Strength</label>
+          <input type="number" min="1" max="5" step="0.1" class="input" formControlName="teamStrength" placeholder="1.0 - 5.0">
+          <p class="field-error" *ngIf="isInvalid('teamStrength')">Use a value from 1.0 to 5.0.</p>
+
+          <label>Last 5 Matches Form</label>
+          <input type="text" class="input" formControlName="formLast5Matches" placeholder="W-W-D-L-W">
+          <p class="field-error" *ngIf="isInvalid('formLast5Matches')">Use exactly five results, for example W-W-D-L-W.</p>
+
+          <label>Tactical Familiarity (%)</label>
+          <input type="number" min="0" max="100" class="input" formControlName="tacticalFitness" placeholder="0 - 100">
+          <p class="field-error" *ngIf="isInvalid('tacticalFitness')">Use a value from 0 to 100.</p>
+
+          <label>Physical Profile</label>
+          <select class="input" formControlName="physicalProfile">
+            <option *ngFor="let option of physicalProfiles" [value]="option.value">{{ option.label }}</option>
+          </select>
+
+          <label>Midfield Quality</label>
+          <select class="input" formControlName="midfieldQuality">
+            <option *ngFor="let option of midfieldQualities" [value]="option.value">{{ option.label }}</option>
+          </select>
+
+          <label>High Defensive Line Ability</label>
+          <select class="input" formControlName="highLineCapability">
+            <option [ngValue]="true">Yes</option>
+            <option [ngValue]="false">No</option>
+          </select>
+
+          <label>Attacking Type</label>
+          <select class="input" formControlName="attackType">
+            <option *ngFor="let option of attackTypes" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </section>
+
+        <section class="input-panel opponent-panel">
+          <h2>
+            Opponent Profile
+          </h2>
+
+          <label>Opponent Strength</label>
+          <input type="number" min="1" max="5" step="0.1" class="input" formControlName="opponentStrength" placeholder="1.0 - 5.0">
+          <p class="field-error" *ngIf="isInvalid('opponentStrength')">Use a value from 1.0 to 5.0.</p>
+
+          <label>Opponent Playing Style</label>
+          <select class="input" formControlName="playingStyle">
+            <option *ngFor="let option of playingStyles" [value]="option.value">{{ option.label }}</option>
+          </select>
+
+          <label>Opponent Line of Engagement</label>
+          <select class="input" formControlName="lineEngagement">
+            <option *ngFor="let option of lineEngagements" [value]="option.value">{{ option.label }}</option>
+          </select>
+
+          <label>Main Opponent Weakness</label>
+          <select class="input" formControlName="weakness">
+            <option *ngFor="let option of weaknesses" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </section>
+
+        <section class="input-panel context-panel">
+          <h2>
+            Match Context
+          </h2>
+
+          <label>Competition Type</label>
+          <select class="input" formControlName="competitionType">
+            <option *ngFor="let option of competitionTypes" [value]="option.value">{{ option.label }}</option>
+          </select>
+
+          <label>Match Importance</label>
+          <select class="input" formControlName="importance">
+            <option *ngFor="let option of matchImportances" [value]="option.value">{{ option.label }}</option>
+          </select>
+
+          <label>Location</label>
+          <select class="input" formControlName="location">
+            <option *ngFor="let option of locations" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </section>
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="submit-button"
+        >
+          {{ isSubmitting ? 'Generating...' : 'Generate Tactical Recommendation' }}
+        </button>
+      </div>
+
+    </form>
+
+    <p class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <app-tactical-recommendation
+      *ngIf="recommendation"
+      [recommendation]="recommendation"
+    ></app-tactical-recommendation>
+  </div>
+</div>

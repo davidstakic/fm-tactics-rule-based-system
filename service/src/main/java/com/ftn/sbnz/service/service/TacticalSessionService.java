@@ -11,10 +11,8 @@ import com.ftn.sbnz.model.forward.Level1Facts;
 import com.ftn.sbnz.model.forward.Level2Facts;
 import com.ftn.sbnz.model.forward.Level3Facts;
 import com.ftn.sbnz.model.forward.TacticalAssistantInput;
-import com.ftn.sbnz.model.forward.TacticalAdvantage;
 import com.ftn.sbnz.model.forward.TacticalExplanationStep;
 import com.ftn.sbnz.model.forward.TacticalRecommendation;
-import com.ftn.sbnz.model.forward.TacticalRisk;
 import com.ftn.sbnz.model.forward.factory.TacticalExplanationFactory;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -173,12 +171,7 @@ public class TacticalSessionService {
         }
 
         for (TacticalExplanationStep step : finalStepByDecision.values()) {
-            for (TacticalAdvantage advantage : step.getAdvantages()) {
-                recommendation.addAdvantage(advantage);
-            }
-            for (TacticalRisk risk : step.getRisks()) {
-                recommendation.addRisk(risk);
-            }
+            step.addTradeoffsTo(recommendation);
         }
     }
 }

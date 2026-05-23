@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'GT America';
+  src: url('/assets/fonts/GT-America-Standard-Regular-Trial.otf') format('opentype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'GT America';
+  src: url('/assets/fonts/GT-America-Standard-Medium-Trial.otf') format('opentype');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'GT America';
+  src: url('/assets/fonts/GT-America-Standard-Bold-Trial.otf') format('opentype');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'GT America Compressed';
+  src: url('/assets/fonts/GT-America-Compressed-Bold-Trial.otf') format('opentype');
+  font-weight: 700;
+}
+
+:root {
+  color-scheme: dark;
+  font-family: 'GT America', Arial, sans-serif;
+  background: #06050c;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #080711;
+}

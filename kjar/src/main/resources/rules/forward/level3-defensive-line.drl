@@ -183,3 +183,24 @@ then
     System.out.println("[FC:L3] defensiveLineHeight=STANDARD | reason=balanced mentality");
 
 end
+
+
+rule "FC L3 - Defensive line STANDARD - default"
+    salience 10
+    no-loop true
+
+when
+    $facts : Level3Facts(
+    defensiveLineHeight == null
+     )
+
+then
+    modify($facts) {
+        setDefensiveLineHeight( DefensiveLineHeight.STANDARD );
+    };
+    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.STANDARD, "there is no stronger reason to push the line higher or drop it deeper"));
+    update($facts);
+
+    System.out.println("[FC:L3] defensiveLineHeight=STANDARD | reason=default");
+
+end
