@@ -1,5 +1,9 @@
 package com.ftn.sbnz.kjar.rules.cep;
 
+import function com.ftn.sbnz.kjar.utils.RuleUtils.decreaseMentality;
+import function com.ftn.sbnz.kjar.utils.RuleUtils.increaseMentality;
+import function com.ftn.sbnz.kjar.utils.RuleUtils.redCardRecommendationType;
+
 import com.ftn.sbnz.model.cep.CEPRecommendation;
 import com.ftn.sbnz.model.cep.ClosingLeadEvent;
 import com.ftn.sbnz.model.cep.LateLosingEvent;
@@ -37,38 +41,6 @@ declare ClosingLeadEvent
 @expires(2h)
 end
 
-function Mentality increaseMentality(Mentality current, int steps) {
-    if(current == null) {
-        return Mentality.POSITIVE;
-    }
-
-    Mentality[] values = Mentality.values();
-    int nextIndex = current.ordinal() + steps;
-    if(nextIndex >= values.length) {
-        nextIndex = values.length - 1;
-    }
-
-    return values[nextIndex];
-}
-
-function Mentality decreaseMentality(Mentality current, int steps) {
-    if(current == null) {
-        return Mentality.CAUTIOUS;
-    }
-
-    int nextIndex = current.ordinal() - steps;
-    if(nextIndex < 0) {
-        nextIndex = 0;
-    }
-
-    return Mentality.values()[nextIndex];
-}
-
-function String redCardRecommendationType(TeamSide teamSide, Integer redCardNumber) {
-    String prefix = teamSide == TeamSide.OPPONENT ? "OPPONENT_RED_CARD_" : "OWN_TEAM_RED_CARD_";
-    return prefix + redCardNumber;
-}
-
 rule "CEP Detect - Opponent red card"
     salience 120
     no-loop true
@@ -98,7 +70,7 @@ then
 
     insert(event);
 
-    System.out.println("[CEP:DETECT] event=OPPONENT_RED_CARD | count=" + $currentOpponentRedCards + " | minute=" + $current.getCurrentMinute());
+    System.out.println( "[CEP:DETECT] event=OPPONENT_RED_CARD | count=" + $currentOpponentRedCards + " | minute=" + $current.getCurrentMinute() );
 
 end
 
@@ -131,7 +103,7 @@ then
 
     insert(event);
 
-    System.out.println("[CEP:DETECT] event=OWN_TEAM_RED_CARD | count=" + $currentOwnRedCards + " | minute=" + $current.getCurrentMinute());
+    System.out.println( "[CEP:DETECT] event=OWN_TEAM_RED_CARD | count=" + $currentOwnRedCards + " | minute=" + $current.getCurrentMinute() );
 
 end
 
@@ -162,7 +134,7 @@ then
 
     insert(event);
 
-    System.out.println("[CEP:DETECT] event=LOSING_LATE | minute=" + $current.getCurrentMinute());
+    System.out.println( "[CEP:DETECT] event=LOSING_LATE | minute=" + $current.getCurrentMinute() );
 
 end
 
@@ -193,7 +165,7 @@ then
 
     insert(event);
 
-    System.out.println("[CEP:DETECT] event=WINNING_CLOSING_PHASE | minute=" + $current.getCurrentMinute());
+    System.out.println( "[CEP:DETECT] event=WINNING_CLOSING_PHASE | minute=" + $current.getCurrentMinute() );
 
 end
 
@@ -207,7 +179,7 @@ when
     $redCardNumber : redCardNumber
      )
 
-    Level2Facts( $mentality : selectedMentality )
+    $level2Facts : Level2Facts( $mentality : selectedMentality )
 
     not CEPRecommendation( 
     eventType == redCardRecommendationType( TeamSide.OPPONENT, $redCardNumber )
@@ -223,8 +195,11 @@ then
     recommendation.setAdjustedPressing( PressingIntensity.HIGH );
 
     insert(recommendation);
+    modify($level2Facts) {
+        setSelectedMentality( recommendation.getAdjustedMentality() )
+    }
 
-    System.out.println("[CEP:RECOMMEND] event=" + redCardRecommendationType( TeamSide.OPPONENT, $redCardNumber ) + " | mentality=" + recommendation.getAdjustedMentality() + " | passing=SHORTER | pressing=HIGH");
+    System.out.println( "[CEP:RECOMMEND] event=" + redCardRecommendationType( TeamSide.OPPONENT, $redCardNumber ) + " | mentality=" + recommendation.getAdjustedMentality() + " | passing=SHORTER | pressing=HIGH" );
 
 end
 
@@ -238,7 +213,7 @@ when
     $redCardNumber : redCardNumber
      )
 
-    Level2Facts( $mentality : selectedMentality )
+    $level2Facts : Level2Facts( $mentality : selectedMentality )
 
     not CEPRecommendation( 
     eventType == redCardRecommendationType( TeamSide.OWN_TEAM, $redCardNumber )
@@ -254,8 +229,11 @@ then
     recommendation.setAdjustedTransition( TransitionAfterLossOfBall.REGROUP );
 
     insert(recommendation);
+    modify($level2Facts) {
+        setSelectedMentality( recommendation.getAdjustedMentality() )
+    }
 
-    System.out.println("[CEP:RECOMMEND] event=" + redCardRecommendationType( TeamSide.OWN_TEAM, $redCardNumber ) + " | mentality=" + recommendation.getAdjustedMentality() + " | pressing=LOW | transition=REGROUP");
+    System.out.println( "[CEP:RECOMMEND] event=" + redCardRecommendationType( TeamSide.OWN_TEAM, $redCardNumber ) + " | mentality=" + recommendation.getAdjustedMentality() + " | pressing=LOW | transition=REGROUP" );
 
 end
 
@@ -266,20 +244,25 @@ rule "CEP Recommend - Losing late"
 when
     $event : LateLosingEvent()
 
+    $level2Facts : Level2Facts()
+
     not CEPRecommendation( eventType == "LOSING_LATE" )
 
 then
     CEPRecommendation recommendation = new CEPRecommendation( 
     "LOSING_LATE",
-            "Your team is losing late in the match, in minute " + $event.getMinute() + ".",
+    "Your team is losing late in the match, in minute " + $event.getMinute() + ".",
     "There is little time left to change the result, so the team should take more attacking risk: raise mentality, press higher, and move the ball forward more directly." );
     recommendation.setAdjustedMentality( Mentality.ATTACKING );
     recommendation.setAdjustedPressing( PressingIntensity.HIGH );
     recommendation.setAdjustedPassing( PassingDirectness.DIRECT );
 
     insert(recommendation);
+    modify($level2Facts) {
+        setSelectedMentality( recommendation.getAdjustedMentality() )
+    }
 
-    System.out.println("[CEP:RECOMMEND] event=LOSING_LATE | mentality=ATTACKING | pressing=HIGH | passing=DIRECT");
+    System.out.println( "[CEP:RECOMMEND] event=LOSING_LATE | mentality=ATTACKING | pressing=HIGH | passing=DIRECT" );
 
 end
 
@@ -290,19 +273,24 @@ rule "CEP Recommend - Winning in closing phase"
 when
     $event : ClosingLeadEvent()
 
+    $level2Facts : Level2Facts()
+
     not CEPRecommendation( eventType == "WINNING_CLOSING_PHASE" )
 
 then
     CEPRecommendation recommendation = new CEPRecommendation( 
     "WINNING_CLOSING_PHASE",
-            "Your team is leading in the closing phase, in minute " + $event.getMinute() + ".",
+    "Your team is leading in the closing phase, in minute " + $event.getMinute() + ".",
     "The team is protecting a lead late in the match, so the priority is risk control: lower the mentality, keep the team shape, and reduce pressing intensity." );
     recommendation.setAdjustedMentality( Mentality.DEFENSIVE );
     recommendation.setAdjustedTransition( TransitionAfterLossOfBall.HOLD_SHAPE );
     recommendation.setAdjustedPressing( PressingIntensity.LOW );
 
     insert(recommendation);
+    modify($level2Facts) {
+        setSelectedMentality( recommendation.getAdjustedMentality() )
+    }
 
-    System.out.println("[CEP:RECOMMEND] event=WINNING_CLOSING_PHASE | mentality=DEFENSIVE | transition=HOLD_SHAPE | pressing=LOW");
+    System.out.println( "[CEP:RECOMMEND] event=WINNING_CLOSING_PHASE | mentality=DEFENSIVE | transition=HOLD_SHAPE | pressing=LOW" );
 
 end

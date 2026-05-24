@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TacticalInputComponent } from './tactical-input.component';
+import { GenerateTacticComponent } from './generate-tactic.component';
 
-describe('TacticalInputComponent', () => {
-  let component: TacticalInputComponent;
-  let fixture: ComponentFixture<TacticalInputComponent>;
+describe('GenerateTacticComponent', () => {
+  let component: GenerateTacticComponent;
+  let fixture: ComponentFixture<GenerateTacticComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TacticalInputComponent]
+      imports: [GenerateTacticComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TacticalInputComponent);
+    fixture = TestBed.createComponent(GenerateTacticComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -35,6 +35,9 @@ export class LiveMatchMonitorComponent {
   errorMessage = '';
   statusMessage = '';
   recommendations: CEPRecommendation[] = [];
+  minimumMinute = 0;
+  minimumOwnTeamRedCards = 0;
+  minimumOpponentRedCards = 0;
 
   startMatch(): void {
     if (this.isStarting || this.matchStarted) {
@@ -76,6 +79,7 @@ export class LiveMatchMonitorComponent {
       .subscribe({
         next: (recommendations) => {
           this.addRecommendations(recommendations);
+          this.rememberSubmittedState();
           this.statusMessage = recommendations.length
             ? 'New live tactical adjustment generated.'
             : 'No new tactical adjustment for this match state.';
@@ -115,6 +119,29 @@ export class LiveMatchMonitorComponent {
 
   private addRecommendations(recommendations: CEPRecommendation[]): void {
     this.recommendations = [...this.recommendations, ...recommendations];
+  }
+
+  private rememberSubmittedState(): void {
+    const state = this.form.getRawValue();
+
+    this.minimumMinute = state.currentMinute;
+    this.minimumOwnTeamRedCards = state.ownTeamRedCards;
+    this.minimumOpponentRedCards = state.opponentRedCards;
+
+    this.form.controls.currentMinute.setValidators([
+      Validators.required,
+      Validators.min(this.minimumMinute),
+      Validators.max(120),
+    ]);
+    this.form.controls.ownTeamRedCards.setValidators([
+      Validators.required,
+      Validators.min(this.minimumOwnTeamRedCards),
+    ]);
+    this.form.controls.opponentRedCards.setValidators([
+      Validators.required,
+      Validators.min(this.minimumOpponentRedCards),
+    ]);
+    this.form.updateValueAndValidity();
   }
 
   private extractErrorMessage(error: unknown): string {

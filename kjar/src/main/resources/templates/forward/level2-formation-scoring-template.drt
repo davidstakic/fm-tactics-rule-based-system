@@ -8,6 +8,7 @@ description
 package com.ftn.sbnz.kjar.rules.forward;
 
 import java.util.List;
+import function com.ftn.sbnz.kjar.utils.RuleUtils.addScoreToFormations;
 import com.ftn.sbnz.model.enums.AttackType;
 import com.ftn.sbnz.model.enums.MidfieldQuality;
 import com.ftn.sbnz.model.forward.TacticalAssistantInput;
@@ -35,27 +36,17 @@ when
         from collect(FormationScore())
 
 then
-
     String[] formations = new String[] { @{formation_group} };
 
-    for (String formation : formations) {
+    addScoreToFormations(
+        $scores,
+        formations,
+        "@{description}",
+        @{number_of_points}
+    );
 
-            for (Object obj : $scores) {
-
-                FormationScore score = (FormationScore) obj;
-
-                if (score.getFormation().name().equals(formation)) {
-
-                    score.addScore(
-                        "@{description}",
-                        @{number_of_points}
-                    );
-
-                    update(score);
-
-                    break;
-                }
-            }
+    for (Object obj : $scores) {
+        update(obj);
     }
 
     insert("formation-scoring:@{description}");

@@ -25,8 +25,10 @@
       <div class="input-grid">
         <label>
           Current Minute
-          <input type="number" min="0" max="120" class="input" formControlName="currentMinute">
-          <span class="field-error" *ngIf="isInvalid('currentMinute')">Use a value from 0 to 120.</span>
+          <input type="number" [min]="minimumMinute" max="120" class="input" formControlName="currentMinute">
+          <span class="field-error" *ngIf="isInvalid('currentMinute')">
+            Use a value from {{ minimumMinute }} to 120.
+          </span>
         </label>
 
         <label>
@@ -38,18 +40,22 @@
 
         <label>
           Own Team Red Cards
-          <input type="number" min="0" class="input" formControlName="ownTeamRedCards">
-          <span class="field-error" *ngIf="isInvalid('ownTeamRedCards')">Use zero or more.</span>
+          <input type="number" [min]="minimumOwnTeamRedCards" class="input" formControlName="ownTeamRedCards">
+          <span class="field-error" *ngIf="isInvalid('ownTeamRedCards')">
+            Use {{ minimumOwnTeamRedCards }} or more.
+          </span>
         </label>
 
         <label>
           Opponent Red Cards
-          <input type="number" min="0" class="input" formControlName="opponentRedCards">
-          <span class="field-error" *ngIf="isInvalid('opponentRedCards')">Use zero or more.</span>
+          <input type="number" [min]="minimumOpponentRedCards" class="input" formControlName="opponentRedCards">
+          <span class="field-error" *ngIf="isInvalid('opponentRedCards')">
+            Use {{ minimumOpponentRedCards }} or more.
+          </span>
         </label>
       </div>
 
-      <button class="primary-button state-button" type="submit" [disabled]="isSubmitting">
+      <button class="primary-button state-button" type="submit" [disabled]="isSubmitting || form.invalid">
         {{ isSubmitting ? 'Sending...' : 'Send Match State' }}
       </button>
     </section>

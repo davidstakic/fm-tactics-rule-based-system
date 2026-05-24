@@ -20,13 +20,13 @@ import {
 import { ForwardChainingApiService } from '../../services/forward-chaining-api.service';
 
 @Component({
-  selector: 'app-tactical-input',
+  selector: 'app-generate-tactic',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, TacticalRecommendationComponent, LiveMatchMonitorComponent],
-  templateUrl: './tactical-input.component.html',
-  styleUrl: './tactical-input.component.css',
+  templateUrl: './generate-tactic.component.html',
+  styleUrl: './generate-tactic.component.css',
 })
-export class TacticalInputComponent {
+export class GenerateTacticComponent {
   private readonly fb = inject(FormBuilder);
   private readonly forwardChainingApi = inject(ForwardChainingApiService);
 

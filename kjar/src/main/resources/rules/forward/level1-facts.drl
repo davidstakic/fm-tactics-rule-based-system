@@ -26,7 +26,7 @@ then
         setHasMediumFitness( true )
     };
 
-    System.out.println("[FC:L1] HasMediumFitness=true | reason=medium tactical fitness");
+    System.out.println( "[FC:L1] HasMediumFitness=true | reason=medium tactical fitness" );
 
 end
 
@@ -50,7 +50,7 @@ then
         setIsDifficultAwayMatch( true )
     };
 
-    System.out.println("[FC:L1] IsDifficultAwayMatch=true | reason=away underdog in high importance match");
+    System.out.println( "[FC:L1] IsDifficultAwayMatch=true | reason=away underdog in high importance match" );
 
 end
 
@@ -72,7 +72,7 @@ then
         setMustWin( true )
     };
 
-    System.out.println("[FC:L1] MustWin=true | reason=high importance cup match");
+    System.out.println( "[FC:L1] MustWin=true | reason=high importance cup match" );
 
 end
 
@@ -95,7 +95,7 @@ then
         setHasDominantPosition( true )
     };
 
-    System.out.println("[FC:L1] HasDominantPosition=true | reason=favorite at home");
+    System.out.println( "[FC:L1] HasDominantPosition=true | reason=favorite at home" );
 
 end
 
@@ -119,7 +119,7 @@ then
         setCanDrawMatch( true )
     };
 
-    System.out.println("[FC:L1] CanDrawMatch=true | reason=even league match with medium importance");
+    System.out.println( "[FC:L1] CanDrawMatch=true | reason=even league match with medium importance" );
 
 end
 
@@ -142,7 +142,7 @@ then
         setIsCautiousMatch( true )
     };
 
-    System.out.println("[FC:L1] IsCautiousMatch=true | reason=underdog in high importance match");
+    System.out.println( "[FC:L1] IsCautiousMatch=true | reason=underdog in high importance match" );
 
 end
 
@@ -165,7 +165,7 @@ then
         setHasCounterOpportunity( true )
     };
 
-    System.out.println("[FC:L1] HasCounterOpportunity=true | reason=opponent defensive weakness");
+    System.out.println( "[FC:L1] HasCounterOpportunity=true | reason=opponent defensive weakness" );
 
 end
 
@@ -187,7 +187,7 @@ then
         setIsAggressiveOpponent( true )
     };
 
-    System.out.println("[FC:L1] IsAggressiveOpponent=true | reason=high press possession opponent");
+    System.out.println( "[FC:L1] IsAggressiveOpponent=true | reason=high press possession opponent" );
 
 end
 
@@ -209,6 +209,6 @@ then
         setIsPassiveOpponent( true )
     };
 
-    System.out.println("[FC:L1] IsPassiveOpponent=true | reason=low block non-counter opponent");
+    System.out.println( "[FC:L1] IsPassiveOpponent=true | reason=low block non-counter opponent" );
 
 end

@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { TacticalInputComponent } from './pages/tactical-input/tactical-input.component';
-import { TacticCheckComponent } from './pages/tactic-check/tactic-check.component';
+import { GenerateTacticComponent } from './pages/generate-tactic/generate-tactic.component';
+import { CheckTacticComponent } from './pages/check-tactic/check-tactic.component';
 
 export const routes: Routes = [
-  { path: 'generate', component: TacticalInputComponent },
-  { path: 'check', component: TacticCheckComponent },
+  { path: 'generate', component: GenerateTacticComponent },
+  { path: 'check', component: CheckTacticComponent },
   { path: '', pathMatch: 'full', redirectTo: 'generate' },
   { path: '**', redirectTo: 'generate' },
 ];

@@ -22,7 +22,7 @@ when
     selectedMentality == Mentality.ATTACKING
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     pressingIntensity == null
      )
 
@@ -30,10 +30,10 @@ then
     modify($facts) {
         setPressingIntensity( PressingIntensity.HIGH );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.pressing(PressingIntensity.HIGH, "the selected mentality is aggressive and supports early pressure"));
+    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.HIGH, "the selected mentality is aggressive and supports early pressure" ) );
     update($facts);
 
-    System.out.println("[FC:L3] pressingIntensity=HIGH | reason=attacking mentality");
+    System.out.println( "[FC:L3] pressingIntensity=HIGH | reason=attacking mentality" );
 
 end
 
@@ -51,7 +51,7 @@ when
     teamProfile.attackType == AttackType.PRESSING_ATTACKERS
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     pressingIntensity == null
      )
 
@@ -59,10 +59,10 @@ then
     modify($facts) {
         setPressingIntensity( PressingIntensity.HIGH );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.pressing(PressingIntensity.HIGH, "the team has forwards suited to pressing and the mentality is positive"));
+    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.HIGH, "the team has forwards suited to pressing and the mentality is positive" ) );
     update($facts);
 
-    System.out.println("[FC:L3] pressingIntensity=HIGH | reason=positive mentality with pressing attackers");
+    System.out.println( "[FC:L3] pressingIntensity=HIGH | reason=positive mentality with pressing attackers" );
 
 end
 
@@ -80,7 +80,7 @@ when
     teamProfile.attackType != AttackType.PRESSING_ATTACKERS
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     pressingIntensity == null
      )
 
@@ -88,10 +88,10 @@ then
     modify($facts) {
         setPressingIntensity( PressingIntensity.MEDIUM );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.pressing(PressingIntensity.MEDIUM, "the mentality is positive, but the attack is not built around constant forward pressing"));
+    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.MEDIUM, "the mentality is positive, but the attack is not built around constant forward pressing" ) );
     update($facts);
 
-    System.out.println("[FC:L3] pressingIntensity=MEDIUM | reason=positive mentality without pressing attackers");
+    System.out.println( "[FC:L3] pressingIntensity=MEDIUM | reason=positive mentality without pressing attackers" );
 
 end
 
@@ -109,7 +109,7 @@ when
     teamProfile.physicalProfile == PhysicalProfile.FAST
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     pressingIntensity == null
      )
 
@@ -117,10 +117,10 @@ then
     modify($facts) {
         setPressingIntensity( PressingIntensity.MEDIUM );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.pressing(PressingIntensity.MEDIUM, "a balanced mentality and fast players allow useful pressure without overcommitting"));
+    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.MEDIUM, "a balanced mentality and fast players allow useful pressure without overcommitting" ) );
     update($facts);
 
-    System.out.println("[FC:L3] pressingIntensity=MEDIUM | reason=balanced mentality with fast team");
+    System.out.println( "[FC:L3] pressingIntensity=MEDIUM | reason=balanced mentality with fast team" );
 
 end
 
@@ -138,7 +138,7 @@ when
     teamProfile.physicalProfile != PhysicalProfile.FAST
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     pressingIntensity == null
      )
 
@@ -146,10 +146,10 @@ then
     modify($facts) {
         setPressingIntensity( PressingIntensity.LOW );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.pressing(PressingIntensity.LOW, "the team does not have a clear pace advantage, so compactness is safer"));
+    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.LOW, "the team does not have a clear pace advantage, so compactness is safer" ) );
     update($facts);
 
-    System.out.println("[FC:L3] pressingIntensity=LOW | reason=balanced mentality without pace advantage");
+    System.out.println( "[FC:L3] pressingIntensity=LOW | reason=balanced mentality without pace advantage" );
 
 end
 
@@ -167,7 +167,7 @@ when
     selectedMentality == Mentality.VERY_DEFENSIVE
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     pressingIntensity == null
      )
 
@@ -175,10 +175,10 @@ then
     modify($facts) {
         setPressingIntensity( PressingIntensity.LOW );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.pressing(PressingIntensity.LOW, "the mentality is cautious or defensive, so the team should protect its shape"));
+    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.LOW, "the mentality is cautious or defensive, so the team should protect its shape" ) );
     update($facts);
 
-    System.out.println("[FC:L3] pressingIntensity=LOW | reason=cautious or defensive mentality");
+    System.out.println( "[FC:L3] pressingIntensity=LOW | reason=cautious or defensive mentality" );
 
 end
 
@@ -200,10 +200,10 @@ then
     modify($facts) {
         setPressingIntensity( PressingIntensity.MEDIUM );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.pressing(PressingIntensity.MEDIUM, "the opponent is also aggressive, so lowering the press helps avoid an open match"));
+    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.MEDIUM, "the opponent is also aggressive, so lowering the press helps avoid an open match" ) );
     update($facts);
 
-    System.out.println("[FC:L3] pressingIntensity=MEDIUM | reason=reduce high press against aggressive opponent");
+    System.out.println( "[FC:L3] pressingIntensity=MEDIUM | reason=reduce high press against aggressive opponent" );
 
 end
 
@@ -213,7 +213,7 @@ rule "FC L3 - Pressing MEDIUM - default"
     no-loop true
 
 when
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     pressingIntensity == null
      )
 
@@ -221,9 +221,9 @@ then
     modify($facts) {
         setPressingIntensity( PressingIntensity.MEDIUM );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.pressing(PressingIntensity.MEDIUM, "there is no stronger reason to use either a very aggressive or very passive press"));
+    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.MEDIUM, "there is no stronger reason to use either a very aggressive or very passive press" ) );
     update($facts);
 
-    System.out.println("[FC:L3] pressingIntensity=MEDIUM | reason=default");
+    System.out.println( "[FC:L3] pressingIntensity=MEDIUM | reason=default" );
 
 end

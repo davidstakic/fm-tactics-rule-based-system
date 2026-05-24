@@ -9,30 +9,30 @@ rule "FC L2 - Select highest scoring formation"
     no-loop true
 
 when
-    $bestFormation : Formation() from accumulate(
-        FormationScore($formation : formation, $score : totalScore),
-        init( Formation best = null; int max = Integer.MIN_VALUE; ),
-        action( if ($score > max) { max = $score; best = $formation; } ),
-        result( best )
-    )
+    $bestFormation : Formation() from accumulate( 
+    FormationScore( $formation : formation, $score : totalScore ),
+    init( Formation best = null; int max = Integer.MIN_VALUE; ),
+    action( if ( $score > max ) { max = $score; best = $formation; } ),
+    result( best )
+     )
 
-    $bestScore : Integer() from accumulate(
-        FormationScore($score : totalScore),
-        init( int max = Integer.MIN_VALUE; ),
-        action( if ($score > max) { max = $score; } ),
-        result( max )
-    )
+    $bestScore : Integer() from accumulate( 
+    FormationScore( $score : totalScore ),
+    init( int max = Integer.MIN_VALUE; ),
+    action( if ( $score > max ) { max = $score; } ),
+    result( max )
+     )
 
-    $facts : Level2Facts(
-        selectedFormation == null
-    )
+    $facts : Level2Facts( 
+    selectedFormation == null
+     )
 
 then
     modify($facts) {
-        setSelectedFormation($bestFormation),
-        setFormationScore($bestScore);
+        setSelectedFormation( $bestFormation ),
+        setFormationScore( $bestScore );
     };
 
-    System.out.println("[FC:L2] selectedFormation=" + $bestFormation + " | score=" + $bestScore);
+    System.out.println( "[FC:L2] selectedFormation=" + $bestFormation + " | score=" + $bestScore );
 
 end

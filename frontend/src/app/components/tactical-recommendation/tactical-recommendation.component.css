@@ -37,6 +37,7 @@ h3 {
 .formation-panel {
   align-items: center;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   overflow: hidden;
   padding: 10px;
@@ -66,6 +67,18 @@ h3 {
   max-height: 560px;
   object-fit: contain;
   width: 100%;
+}
+
+.formation-explanation {
+  align-self: stretch;
+  background: #14111f;
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  border-radius: 8px;
+  color: #9c93ad;
+  font-size: 13px;
+  line-height: 1.45;
+  margin-top: 10px;
+  padding: 12px 14px;
 }
 
 .instructions-panel {

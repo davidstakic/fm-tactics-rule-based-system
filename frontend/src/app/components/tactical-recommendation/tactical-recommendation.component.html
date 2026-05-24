@@ -3,12 +3,15 @@
     <section class="formation-panel">
       <div class="formation-title">
         <span>Formation</span>
-        <strong>{{ displayValue(recommendation.basicSettings?.recommendedFormation) }}</strong>
+        <strong>{{ formationView().value }}</strong>
       </div>
       <img
         [src]="formationImageUrl()"
-        [alt]="displayValue(recommendation.basicSettings?.recommendedFormation) + ' formation'"
+        [alt]="formationView().value + ' formation'"
       >
+      <p class="formation-explanation" *ngIf="formationView().explanation">
+        {{ formationView().explanation }}
+      </p>
     </section>
 
     <section class="instructions-panel">

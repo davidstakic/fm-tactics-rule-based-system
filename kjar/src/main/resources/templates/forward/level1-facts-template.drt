@@ -6,6 +6,8 @@ flag_name
 
 package com.ftn.sbnz.kjar.rules.forward;
 
+import function com.ftn.sbnz.kjar.utils.RuleUtils.countWinsInForm;
+
 import com.ftn.sbnz.model.enums.CompetitionType;
 import com.ftn.sbnz.model.enums.DefenseLineEngagement;
 import com.ftn.sbnz.model.enums.LocationType;
@@ -14,20 +16,6 @@ import com.ftn.sbnz.model.enums.OpponentWeakness;
 import com.ftn.sbnz.model.enums.PlayingStyle;
 import com.ftn.sbnz.model.forward.TacticalAssistantInput;
 import com.ftn.sbnz.model.forward.Level1Facts;
-
-function int countWinsInForm(String formLast5Matches) {
-    if (formLast5Matches == null || formLast5Matches.trim().isEmpty()) {
-        return 0;
-    }
-
-    int wins = 0;
-    for (String result : formLast5Matches.split("-")) {
-        if ("W".equals(result.trim())) {
-            wins++;
-        }
-    }
-    return wins;
-}
 
 template "Level 1 Facts"
 

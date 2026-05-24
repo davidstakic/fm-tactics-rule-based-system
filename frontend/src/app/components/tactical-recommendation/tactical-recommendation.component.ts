@@ -12,6 +12,11 @@ interface InstructionView {
   explanation?: string;
 }
 
+interface FormationView {
+  value: string;
+  explanation?: string;
+}
+
 @Component({
   selector: 'app-tactical-recommendation',
   standalone: true,
@@ -55,6 +60,13 @@ export class TacticalRecommendationComponent {
     const digits = formation.replace(/^FORMATION_/, '');
     const fileName = digits.split('').join('-');
     return `/assets/formations/${fileName}.png`;
+  }
+
+  formationView(): FormationView {
+    return {
+      value: this.displayValue(this.recommendation.basicSettings?.recommendedFormation),
+      explanation: this.explanationFor('Formation')?.explanation,
+    };
   }
 
   instructionViews(): InstructionView[] {

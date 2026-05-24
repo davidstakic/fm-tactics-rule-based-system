@@ -18,7 +18,7 @@ when
     teamProfile.highLineCapability == false
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     defensiveLineHeight == null
      )
 
@@ -26,10 +26,10 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.LOW );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.LOW, "the team is not well suited to holding a high defensive line"));
+    $facts.addExplanationStep( TacticalExplanationFactory.defensiveLine( DefensiveLineHeight.LOW, "the team is not well suited to holding a high defensive line" ) );
     update($facts);
 
-    System.out.println("[FC:L3] defensiveLineHeight=LOW | reason=no high-line capability");
+    System.out.println( "[FC:L3] defensiveLineHeight=LOW | reason=no high-line capability" );
 
 end
 
@@ -47,7 +47,7 @@ when
     selectedMentality == Mentality.VERY_DEFENSIVE
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     defensiveLineHeight == null
      )
 
@@ -55,10 +55,10 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.LOW );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.LOW, "the selected mentality asks the team to stay compact and protect space"));
+    $facts.addExplanationStep( TacticalExplanationFactory.defensiveLine( DefensiveLineHeight.LOW, "the selected mentality asks the team to stay compact and protect space" ) );
     update($facts);
 
-    System.out.println("[FC:L3] defensiveLineHeight=LOW | reason=cautious or defensive mentality");
+    System.out.println( "[FC:L3] defensiveLineHeight=LOW | reason=cautious or defensive mentality" );
 
 end
 
@@ -78,7 +78,7 @@ when
     selectedMentality == Mentality.VERY_ATTACKING
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     defensiveLineHeight == null
      )
 
@@ -86,10 +86,10 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.HIGH );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.HIGH, "the team can handle a higher line and the mentality is attacking"));
+    $facts.addExplanationStep( TacticalExplanationFactory.defensiveLine( DefensiveLineHeight.HIGH, "the team can handle a higher line and the mentality is attacking" ) );
     update($facts);
 
-    System.out.println("[FC:L3] defensiveLineHeight=HIGH | reason=high-line capable attacking team");
+    System.out.println( "[FC:L3] defensiveLineHeight=HIGH | reason=high-line capable attacking team" );
 
 end
 
@@ -111,7 +111,7 @@ when
     hasCounterOpportunity == false
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     defensiveLineHeight == null
      )
 
@@ -119,10 +119,10 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.HIGH );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.HIGH, "the team can defend higher and there is no strong counter threat"));
+    $facts.addExplanationStep( TacticalExplanationFactory.defensiveLine( DefensiveLineHeight.HIGH, "the team can defend higher and there is no strong counter threat" ) );
     update($facts);
 
-    System.out.println("[FC:L3] defensiveLineHeight=HIGH | reason=positive mentality without counter threat");
+    System.out.println( "[FC:L3] defensiveLineHeight=HIGH | reason=positive mentality without counter threat" );
 
 end
 
@@ -132,7 +132,7 @@ rule "FC L3 - Defensive line STANDARD - counter threat"
     no-loop true
 
 when
-    TacticalAssistantInput(
+    TacticalAssistantInput( 
     teamProfile.highLineCapability == true
      )
 
@@ -140,7 +140,7 @@ when
     hasCounterOpportunity == true
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     defensiveLineHeight == null
      )
 
@@ -148,10 +148,10 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.STANDARD );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.STANDARD, "the opponent has counter-attacking space, so the line should not be too high"));
+    $facts.addExplanationStep( TacticalExplanationFactory.defensiveLine( DefensiveLineHeight.STANDARD, "the opponent has counter-attacking space, so the line should not be too high" ) );
     update($facts);
 
-    System.out.println("[FC:L3] defensiveLineHeight=STANDARD | reason=counter threat");
+    System.out.println( "[FC:L3] defensiveLineHeight=STANDARD | reason=counter threat" );
 
 end
 
@@ -169,7 +169,7 @@ when
     selectedMentality == Mentality.BALANCED
      )
 
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     defensiveLineHeight == null
      )
 
@@ -177,10 +177,10 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.STANDARD );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.STANDARD, "the balanced mentality calls for a stable defensive position"));
+    $facts.addExplanationStep( TacticalExplanationFactory.defensiveLine( DefensiveLineHeight.STANDARD, "the balanced mentality calls for a stable defensive position" ) );
     update($facts);
 
-    System.out.println("[FC:L3] defensiveLineHeight=STANDARD | reason=balanced mentality");
+    System.out.println( "[FC:L3] defensiveLineHeight=STANDARD | reason=balanced mentality" );
 
 end
 
@@ -190,7 +190,7 @@ rule "FC L3 - Defensive line STANDARD - default"
     no-loop true
 
 when
-    $facts : Level3Facts(
+    $facts : Level3Facts( 
     defensiveLineHeight == null
      )
 
@@ -198,9 +198,9 @@ then
     modify($facts) {
         setDefensiveLineHeight( DefensiveLineHeight.STANDARD );
     };
-    $facts.addExplanationStep(TacticalExplanationFactory.defensiveLine(DefensiveLineHeight.STANDARD, "there is no stronger reason to push the line higher or drop it deeper"));
+    $facts.addExplanationStep( TacticalExplanationFactory.defensiveLine( DefensiveLineHeight.STANDARD, "there is no stronger reason to push the line higher or drop it deeper" ) );
     update($facts);
 
-    System.out.println("[FC:L3] defensiveLineHeight=STANDARD | reason=default");
+    System.out.println( "[FC:L3] defensiveLineHeight=STANDARD | reason=default" );
 
 end

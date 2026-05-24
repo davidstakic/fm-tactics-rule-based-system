@@ -19,17 +19,21 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
 
 class CEPRulesTest {
 
     private KieSession kieSession;
     private EntryPoint matchEvents;
     private long baseTimestamp;
+    private Level2Facts level2Facts;
+    private FactHandle level2FactsHandle;
 
     @BeforeEach
     void setUp() {
         kieSession = ForwardChainingKieBaseFactory.create().newKieSession();
-        kieSession.insert(new Level2Facts(null, Mentality.BALANCED, null));
+        level2Facts = new Level2Facts(null, Mentality.BALANCED, null);
+        level2FactsHandle = kieSession.insert(level2Facts);
         matchEvents = kieSession.getEntryPoint("match-events");
         baseTimestamp = System.currentTimeMillis();
     }
@@ -69,6 +73,33 @@ class CEPRulesTest {
         assertEquals(Mentality.DEFENSIVE, recommendation.getAdjustedMentality());
         assertEquals(PressingIntensity.LOW, recommendation.getAdjustedPressing());
         assertEquals(TransitionAfterLossOfBall.REGROUP, recommendation.getAdjustedTransition());
+    }
+
+    @Test
+    void ownTeamRedCardAfterOpponentRedCardUsesAdjustedMentality() {
+        level2Facts.setSelectedMentality(Mentality.POSITIVE);
+        kieSession.update(level2FactsHandle, level2Facts);
+
+        insertMatchState(0L, 30, MatchResult.DRAW, 0, 0);
+        kieSession.fireAllRules();
+
+        insertMatchState(60_000L, 35, MatchResult.DRAW, 0, 1);
+        kieSession.fireAllRules();
+
+        CEPRecommendation opponentRedCardRecommendation = findRecommendation("OPPONENT_RED_CARD_1");
+
+        assertNotNull(opponentRedCardRecommendation);
+        assertEquals(Mentality.ATTACKING, opponentRedCardRecommendation.getAdjustedMentality());
+        assertEquals(Mentality.ATTACKING, level2Facts.getSelectedMentality());
+
+        insertMatchState(120_000L, 40, MatchResult.DRAW, 1, 1);
+        kieSession.fireAllRules();
+
+        CEPRecommendation ownRedCardRecommendation = findRecommendation("OWN_TEAM_RED_CARD_1");
+
+        assertNotNull(ownRedCardRecommendation);
+        assertEquals(Mentality.BALANCED, ownRedCardRecommendation.getAdjustedMentality());
+        assertEquals(Mentality.BALANCED, level2Facts.getSelectedMentality());
     }
 
     @Test

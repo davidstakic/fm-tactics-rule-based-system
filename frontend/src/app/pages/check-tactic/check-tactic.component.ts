@@ -25,13 +25,13 @@ interface GoalCategoryOption {
 }
 
 @Component({
-  selector: 'app-tactic-check',
+  selector: 'app-check-tactic',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './tactic-check.component.html',
-  styleUrl: './tactic-check.component.css',
+  templateUrl: './check-tactic.component.html',
+  styleUrl: './check-tactic.component.css',
 })
-export class TacticCheckComponent implements OnInit {
+export class CheckTacticComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly api = inject(BackwardChainingApiService);
   private readonly destroyRef = inject(DestroyRef);
