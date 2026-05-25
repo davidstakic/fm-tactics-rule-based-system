@@ -1,6 +1,5 @@
 package com.ftn.sbnz.kjar.rules.forward;
 
-import com.ftn.sbnz.model.enums.Formation;
 import com.ftn.sbnz.model.forward.Level2Facts;
 import com.ftn.sbnz.model.forward.FormationScore;
 
@@ -9,18 +8,14 @@ rule "FC L2 - Select highest scoring formation"
     no-loop true
 
 when
-    $bestFormation : Formation() from accumulate( 
-    FormationScore( $formation : formation, $score : totalScore ),
-    init( Formation best = null; int max = Integer.MIN_VALUE; ),
-    action( if ( $score > max ) { max = $score; best = $formation; } ),
-    result( best )
-     )
-
     $bestScore : Integer() from accumulate( 
     FormationScore( $score : totalScore ),
-    init( int max = Integer.MIN_VALUE; ),
-    action( if ( $score > max ) { max = $score; } ),
-    result( max )
+    max( $score )
+     )
+
+    FormationScore( 
+    $bestFormation : formation,
+    totalScore == $bestScore
      )
 
     $facts : Level2Facts( 
