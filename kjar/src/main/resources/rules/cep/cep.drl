@@ -2,6 +2,8 @@ package com.ftn.sbnz.kjar.rules.cep;
 
 import function com.ftn.sbnz.kjar.utils.RuleUtils.decreaseMentality;
 import function com.ftn.sbnz.kjar.utils.RuleUtils.increaseMentality;
+import function com.ftn.sbnz.kjar.utils.RuleUtils.closingLeadRecommendationType;
+import function com.ftn.sbnz.kjar.utils.RuleUtils.lateLosingRecommendationType;
 import function com.ftn.sbnz.kjar.utils.RuleUtils.redCardRecommendationType;
 
 import com.ftn.sbnz.model.cep.CEPRecommendation;
@@ -113,11 +115,14 @@ rule "CEP Detect - Losing late"
 
 when
     $previous : MatchStateEvent( 
+    $previousTimestamp : timestamp != null,
     $previousMinute : currentMinute != null,
     $previousResult : currentResult
      ) from entry-point "match-events"
 
     $current : MatchStateEvent( 
+    timestamp != null,
+    timestamp > $previousTimestamp,
     this after[0s, 2h] $previous,
     currentMinute != null,
     currentMinute >= 70,
@@ -125,7 +130,13 @@ when
     ( $previousMinute < 70 || $previousResult != MatchResult.LOSING )
      ) from entry-point "match-events"
 
-    not LateLosingEvent()
+    not MatchStateEvent( 
+    timestamp != null,
+    timestamp > $previousTimestamp,
+    timestamp < $current.getTimestamp()
+     ) from entry-point "match-events"
+
+    not LateLosingEvent( minute == $current.getCurrentMinute() )
 
 then
     LateLosingEvent event = new LateLosingEvent( 
@@ -144,11 +155,14 @@ rule "CEP Detect - Winning in closing phase"
 
 when
     $previous : MatchStateEvent( 
+    $previousTimestamp : timestamp != null,
     $previousMinute : currentMinute != null,
     $previousResult : currentResult
      ) from entry-point "match-events"
 
     $current : MatchStateEvent( 
+    timestamp != null,
+    timestamp > $previousTimestamp,
     this after[0s, 2h] $previous,
     currentMinute != null,
     currentMinute >= 75,
@@ -156,7 +170,13 @@ when
     ( $previousMinute < 75 || $previousResult != MatchResult.WINNING )
      ) from entry-point "match-events"
 
-    not ClosingLeadEvent()
+    not MatchStateEvent(
+    timestamp != null,
+    timestamp > $previousTimestamp,
+    timestamp < $current.getTimestamp()
+     ) from entry-point "match-events"
+
+    not ClosingLeadEvent( minute == $current.getCurrentMinute() )
 
 then
     ClosingLeadEvent event = new ClosingLeadEvent( 
@@ -246,11 +266,11 @@ when
 
     $level2Facts : Level2Facts()
 
-    not CEPRecommendation( eventType == "LOSING_LATE" )
+    not CEPRecommendation( eventType == lateLosingRecommendationType( $event.getMinute() ) )
 
 then
     CEPRecommendation recommendation = new CEPRecommendation( 
-    "LOSING_LATE",
+    lateLosingRecommendationType( $event.getMinute() ),
     "Your team is losing late in the match, in minute " + $event.getMinute() + ".",
     "There is little time left to change the result, so the team should take more attacking risk: raise mentality, press higher, and move the ball forward more directly." );
     recommendation.setAdjustedMentality( Mentality.ATTACKING );
@@ -262,7 +282,7 @@ then
         setSelectedMentality( recommendation.getAdjustedMentality() )
     }
 
-    System.out.println( "[CEP:RECOMMEND] event=LOSING_LATE | mentality=ATTACKING | pressing=HIGH | passing=DIRECT" );
+    System.out.println( "[CEP:RECOMMEND] event=" + lateLosingRecommendationType( $event.getMinute() ) + " | mentality=ATTACKING | pressing=HIGH | passing=DIRECT" );
 
 end
 
@@ -275,11 +295,11 @@ when
 
     $level2Facts : Level2Facts()
 
-    not CEPRecommendation( eventType == "WINNING_CLOSING_PHASE" )
+    not CEPRecommendation( eventType == closingLeadRecommendationType( $event.getMinute() ) )
 
 then
     CEPRecommendation recommendation = new CEPRecommendation( 
-    "WINNING_CLOSING_PHASE",
+    closingLeadRecommendationType( $event.getMinute() ),
     "Your team is leading in the closing phase, in minute " + $event.getMinute() + ".",
     "The team is protecting a lead late in the match, so the priority is risk control: lower the mentality, keep the team shape, and reduce pressing intensity." );
     recommendation.setAdjustedMentality( Mentality.DEFENSIVE );
@@ -291,6 +311,6 @@ then
         setSelectedMentality( recommendation.getAdjustedMentality() )
     }
 
-    System.out.println( "[CEP:RECOMMEND] event=WINNING_CLOSING_PHASE | mentality=DEFENSIVE | transition=HOLD_SHAPE | pressing=LOW" );
+    System.out.println( "[CEP:RECOMMEND] event=" + closingLeadRecommendationType( $event.getMinute() ) + " | mentality=DEFENSIVE | transition=HOLD_SHAPE | pressing=LOW" );
 
 end

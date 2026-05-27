@@ -110,7 +110,7 @@ class CEPRulesTest {
         insertMatchState(60_000L, 70, MatchResult.LOSING, 0, 0);
         kieSession.fireAllRules();
 
-        CEPRecommendation recommendation = findRecommendation("LOSING_LATE");
+        CEPRecommendation recommendation = findRecommendation("LOSING_LATE_70");
 
         assertNotNull(recommendation);
         assertEquals(Mentality.ATTACKING, recommendation.getAdjustedMentality());
@@ -126,12 +126,40 @@ class CEPRulesTest {
         insertMatchState(60_000L, 75, MatchResult.WINNING, 0, 0);
         kieSession.fireAllRules();
 
-        CEPRecommendation recommendation = findRecommendation("WINNING_CLOSING_PHASE");
+        CEPRecommendation recommendation = findRecommendation("WINNING_CLOSING_PHASE_75");
 
         assertNotNull(recommendation);
         assertEquals(Mentality.DEFENSIVE, recommendation.getAdjustedMentality());
         assertEquals(PressingIntensity.LOW, recommendation.getAdjustedPressing());
         assertEquals(TransitionAfterLossOfBall.HOLD_SHAPE, recommendation.getAdjustedTransition());
+    }
+
+    @Test
+    void winningLosingWinningCreatesSecondClosingLeadRecommendation() {
+        insertMatchState(0L, 74, MatchResult.DRAW, 0, 0);
+        kieSession.fireAllRules();
+
+        insertMatchState(60_000L, 75, MatchResult.WINNING, 0, 0);
+        kieSession.fireAllRules();
+
+        insertMatchState(120_000L, 80, MatchResult.LOSING, 0, 0);
+        kieSession.fireAllRules();
+
+        insertMatchState(180_000L, 84, MatchResult.WINNING, 0, 0);
+        kieSession.fireAllRules();
+
+        CEPRecommendation firstClosingLeadRecommendation = findRecommendation("WINNING_CLOSING_PHASE_75");
+        CEPRecommendation lateLosingRecommendation = findRecommendation("LOSING_LATE_80");
+        CEPRecommendation secondClosingLeadRecommendation = findRecommendation("WINNING_CLOSING_PHASE_84");
+
+        assertNotNull(firstClosingLeadRecommendation);
+        assertNotNull(lateLosingRecommendation);
+        assertNotNull(secondClosingLeadRecommendation);
+        assertEquals(Mentality.DEFENSIVE, secondClosingLeadRecommendation.getAdjustedMentality());
+        assertEquals(PressingIntensity.LOW, secondClosingLeadRecommendation.getAdjustedPressing());
+        assertEquals(TransitionAfterLossOfBall.HOLD_SHAPE, secondClosingLeadRecommendation.getAdjustedTransition());
+        assertEquals(2, countRecommendations("WINNING_CLOSING_PHASE"));
+        assertEquals(1, countRecommendations("LOSING_LATE"));
     }
 
     private void insertMatchState(Long timestamp, Integer minute, MatchResult result,
@@ -147,5 +175,13 @@ class CEPRulesTest {
                 .filter(recommendation -> eventType.equals(recommendation.getEventType()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    private long countRecommendations(String eventTypePrefix) {
+        Collection<?> recommendations = kieSession.getObjects(new ClassObjectFilter(CEPRecommendation.class));
+        return recommendations.stream()
+                .map(CEPRecommendation.class::cast)
+                .filter(recommendation -> recommendation.getEventType().startsWith(eventTypePrefix))
+                .count();
     }
 }

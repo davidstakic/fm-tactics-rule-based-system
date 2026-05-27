@@ -72,4 +72,12 @@ public final class RuleUtils {
         String prefix = teamSide == TeamSide.OPPONENT ? "OPPONENT_RED_CARD_" : "OWN_TEAM_RED_CARD_";
         return prefix + redCardNumber;
     }
+
+    public static String lateLosingRecommendationType(Integer minute) {
+        return "LOSING_LATE_" + minute;
+    }
+
+    public static String closingLeadRecommendationType(Integer minute) {
+        return "WINNING_CLOSING_PHASE_" + minute;
+    }
 }
