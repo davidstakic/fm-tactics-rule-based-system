@@ -62,10 +62,10 @@ h3 {
   line-height: 1;
 }
 
-.formation-panel img {
-  display: block;
-  max-height: 560px;
-  object-fit: contain;
+app-formation-pitch {
+  align-items: center;
+  display: flex;
+  justify-content: center;
   width: 100%;
 }
 

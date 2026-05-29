@@ -1,0 +1,119 @@
+.pitch {
+  aspect-ratio: 42 / 65;
+  background: #4f7f55;
+  border: 1px solid rgba(196, 181, 253, 0.36);
+  border-radius: 8px;
+  margin-top: 58px;
+  max-height: 560px;
+  max-width: 410px;
+  overflow: hidden;
+  position: relative;
+  width: min(100%, 410px);
+}
+
+.stripe {
+  background: rgba(255, 255, 255, 0.055);
+  height: 25%;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.stripe-top {
+  top: 25%;
+}
+
+.stripe-bottom {
+  top: 75%;
+}
+
+.center-line,
+.center-circle,
+.penalty-box,
+.goal-box {
+  border-color: rgba(248, 245, 255, 0.72);
+  position: absolute;
+}
+
+.center-line {
+  background: rgba(248, 245, 255, 0.72);
+  height: 2px;
+  left: 0;
+  top: 50%;
+  width: 100%;
+}
+
+.center-circle {
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 999px;
+  height: 18%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 29%;
+}
+
+.penalty-box {
+  border-style: solid;
+  border-width: 2px;
+  height: 14%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 52%;
+}
+
+.penalty-box.top {
+  border-top: 0;
+  top: 0;
+}
+
+.penalty-box.bottom {
+  border-bottom: 0;
+  bottom: 0;
+}
+
+.goal-box {
+  border-style: solid;
+  border-width: 2px;
+  height: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 27%;
+}
+
+.goal-box.top {
+  border-top: 0;
+  top: 0;
+}
+
+.goal-box.bottom {
+  border-bottom: 0;
+  bottom: 0;
+}
+
+.player {
+  align-items: center;
+  background: #7c5ac7;
+  border: 2px solid rgba(248, 245, 255, 0.88);
+  border-radius: 999px;
+  color: #fbfaff;
+  display: flex;
+  font-size: clamp(9px, 2.4vw, 12px);
+  font-weight: 800;
+  height: clamp(34px, 8.5vw, 44px);
+  justify-content: center;
+  letter-spacing: 0;
+  line-height: 1;
+  position: absolute;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  width: clamp(34px, 8.5vw, 44px);
+  z-index: 2;
+}
+
+@media (max-width: 520px) {
+  .pitch {
+    margin-top: 70px;
+  }
+}

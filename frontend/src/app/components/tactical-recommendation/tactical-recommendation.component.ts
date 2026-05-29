@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { FormationPitchComponent } from '../formation-pitch/formation-pitch.component';
 import {
   TacticalExplanationStep,
   TacticalNote,
@@ -20,7 +21,7 @@ interface FormationView {
 @Component({
   selector: 'app-tactical-recommendation',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormationPitchComponent],
   templateUrl: './tactical-recommendation.component.html',
   styleUrl: './tactical-recommendation.component.css',
 })
@@ -48,18 +49,6 @@ export class TacticalRecommendationComponent {
       .replaceAll('_', ' ')
       .toLowerCase()
       .replace(/\b\w/g, (letter) => letter.toUpperCase());
-  }
-
-  formationImageUrl(): string {
-    const formation = this.recommendation.basicSettings?.recommendedFormation;
-
-    if (!formation) {
-      return '/assets/formations/4-4-2.png';
-    }
-
-    const digits = formation.replace(/^FORMATION_/, '');
-    const fileName = digits.split('').join('-');
-    return `/assets/formations/${fileName}.png`;
   }
 
   formationView(): FormationView {

@@ -5,10 +5,9 @@
         <span>Formation</span>
         <strong>{{ formationView().value }}</strong>
       </div>
-      <img
-        [src]="formationImageUrl()"
-        [alt]="formationView().value + ' formation'"
-      >
+      <app-formation-pitch
+        [formation]="recommendation.basicSettings?.recommendedFormation"
+      ></app-formation-pitch>
       <p class="formation-explanation" *ngIf="formationView().explanation">
         {{ formationView().explanation }}
       </p>
