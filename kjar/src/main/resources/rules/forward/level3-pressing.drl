@@ -11,14 +11,37 @@ import com.ftn.sbnz.model.forward.Level3Facts;
 import com.ftn.sbnz.model.forward.factory.TacticalExplanationFactory;
 
 
-rule "FC L3 - Pressing HIGH - attacking mentality"
+rule "FC L3 - Pressing HIGH - very attacking mentality"
     salience 30
     no-loop true
 
 when
     Level2Facts( 
     selectedMentality == Mentality.VERY_ATTACKING
-    ||
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.HIGH );
+    };
+    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.HIGH, "the selected mentality is aggressive and supports early pressure" ) );
+    update($facts);
+
+    System.out.println( "[FC:L3] pressingIntensity=HIGH | reason=very attacking mentality" );
+
+end
+
+
+rule "FC L3 - Pressing HIGH - attacking mentality"
+    salience 30
+    no-loop true
+
+when
+    Level2Facts( 
     selectedMentality == Mentality.ATTACKING
      )
 
@@ -154,16 +177,62 @@ then
 end
 
 
-rule "FC L3 - Pressing LOW - cautious or defensive mentality"
+rule "FC L3 - Pressing LOW - cautious mentality"
     salience 25
     no-loop true
 
 when
     Level2Facts( 
     selectedMentality == Mentality.CAUTIOUS
-    ||
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.LOW );
+    };
+    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.LOW, "the mentality is cautious, so the team should protect its shape" ) );
+    update($facts);
+
+    System.out.println( "[FC:L3] pressingIntensity=LOW | reason=cautious mentality" );
+
+end
+
+
+rule "FC L3 - Pressing LOW - defensive mentality"
+    salience 25
+    no-loop true
+
+when
+    Level2Facts( 
     selectedMentality == Mentality.DEFENSIVE
-    ||
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.LOW );
+    };
+    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.LOW, "the mentality is defensive, so the team should protect its shape" ) );
+    update($facts);
+
+    System.out.println( "[FC:L3] pressingIntensity=LOW | reason=defensive mentality" );
+
+end
+
+
+rule "FC L3 - Pressing LOW - very defensive mentality"
+    salience 25
+    no-loop true
+
+when
+    Level2Facts( 
     selectedMentality == Mentality.VERY_DEFENSIVE
      )
 
@@ -175,10 +244,10 @@ then
     modify($facts) {
         setPressingIntensity( PressingIntensity.LOW );
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.LOW, "the mentality is cautious or defensive, so the team should protect its shape" ) );
+    $facts.addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.LOW, "the mentality is very defensive, so the team should protect its shape" ) );
     update($facts);
 
-    System.out.println( "[FC:L3] pressingIntensity=LOW | reason=cautious or defensive mentality" );
+    System.out.println( "[FC:L3] pressingIntensity=LOW | reason=very defensive mentality" );
 
 end
 

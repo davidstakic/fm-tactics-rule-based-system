@@ -16,7 +16,8 @@ rule "FC L1 - Medium fitness"
 
 when
     $input : TacticalAssistantInput( 
-    teamProfile.tacticalFitness >= 40 && teamProfile.tacticalFitness <= 69
+    teamProfile.tacticalFitness >= 40,
+    teamProfile.tacticalFitness <= 69
      )
 
     $facts : Level1Facts()
@@ -147,14 +148,33 @@ then
 end
 
 
-rule "FC L1 - Counter opportunity"
+rule "FC L1 - Counter opportunity slow defenders"
     salience 95
     no-loop true
 
 when
     $input : TacticalAssistantInput( 
     opponentProfile.weakness == OpponentWeakness.SLOW_DEFENDERS
-    ||
+     )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        setHasCounterOpportunity( true )
+    };
+
+    System.out.println( "[FC:L1] HasCounterOpportunity=true | reason=opponent has slow defenders" );
+
+end
+
+
+rule "FC L1 - Counter opportunity vulnerable on flanks"
+    salience 95
+    no-loop true
+
+when
+    $input : TacticalAssistantInput( 
     opponentProfile.weakness == OpponentWeakness.VULNERABLE_ON_FLANKS
      )
 
@@ -165,7 +185,7 @@ then
         setHasCounterOpportunity( true )
     };
 
-    System.out.println( "[FC:L1] HasCounterOpportunity=true | reason=opponent defensive weakness" );
+    System.out.println( "[FC:L1] HasCounterOpportunity=true | reason=opponent vulnerable on flanks" );
 
 end
 

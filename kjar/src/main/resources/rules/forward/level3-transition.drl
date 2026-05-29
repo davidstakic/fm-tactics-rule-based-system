@@ -50,8 +50,6 @@ rule "FC L3 - Transition COUNTER_PRESS - attacking high press"
 when
     Level2Facts( 
     selectedMentality == Mentality.ATTACKING
-    ||
-    selectedMentality == Mentality.VERY_ATTACKING
      )
 
     $facts : Level3Facts( 
@@ -69,6 +67,34 @@ then
     update($facts);
 
     System.out.println( "[FC:L3] transitionAfterLossOfBall=COUNTER_PRESS | reason=attacking mentality with high press" );
+
+end
+
+
+rule "FC L3 - Transition COUNTER_PRESS - very attacking high press"
+    salience 19
+    no-loop true
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.VERY_ATTACKING
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == PressingIntensity.HIGH,
+    transitionAfterLossOfBall == null
+     )
+
+then
+    modify($facts) {
+        setTransitionAfterLossOfBall( 
+        TransitionAfterLossOfBall.COUNTER_PRESS
+         );
+    };
+    $facts.addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.COUNTER_PRESS, "the very attacking mentality is already paired with high pressing" ) );
+    update($facts);
+
+    System.out.println( "[FC:L3] transitionAfterLossOfBall=COUNTER_PRESS | reason=very attacking mentality with high press" );
 
 end
 
@@ -101,7 +127,7 @@ then
 end
 
 
-rule "FC L3 - Transition HOLD_SHAPE - counter opportunity"
+rule "FC L3 - Transition HOLD_SHAPE - counter opportunity with defensive mentality"
     salience 17
     no-loop true
 
@@ -112,8 +138,6 @@ when
 
     Level2Facts( 
     selectedMentality == Mentality.DEFENSIVE
-    ||
-    selectedMentality == Mentality.CAUTIOUS
      )
 
     $facts : Level3Facts( 
@@ -130,6 +154,37 @@ then
     update($facts);
 
     System.out.println( "[FC:L3] transitionAfterLossOfBall=HOLD_SHAPE | reason=counter opportunity with defensive mentality" );
+
+end
+
+
+rule "FC L3 - Transition HOLD_SHAPE - counter opportunity with cautious mentality"
+    salience 17
+    no-loop true
+
+when
+    Level1Facts( 
+    hasCounterOpportunity == true
+     )
+
+    Level2Facts( 
+    selectedMentality == Mentality.CAUTIOUS
+     )
+
+    $facts : Level3Facts( 
+    transitionAfterLossOfBall == null
+     )
+
+then
+    modify($facts) {
+        setTransitionAfterLossOfBall( 
+        TransitionAfterLossOfBall.HOLD_SHAPE
+         );
+    };
+    $facts.addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.HOLD_SHAPE, "the team can counter, but the mentality is protective, so structure matters" ) );
+    update($facts);
+
+    System.out.println( "[FC:L3] transitionAfterLossOfBall=HOLD_SHAPE | reason=counter opportunity with cautious mentality" );
 
 end
 

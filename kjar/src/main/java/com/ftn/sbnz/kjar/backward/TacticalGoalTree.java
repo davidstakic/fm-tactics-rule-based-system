@@ -115,7 +115,7 @@ public final class TacticalGoalTree {
         addAnyRequiredGroup(tacticalGoals, "COMPOSITE:VeryAttackingOrAttacking", "Very attacking or attacking mentality",
                 mentalityGoal(Mentality.VERY_ATTACKING),
                 mentalityGoal(Mentality.ATTACKING));
-        addAnyRequiredGroup(tacticalGoals, "COMPOSITE:CautiousOrDefensiveOrVeryDefensive", "Cautious or defensive mentality",
+        addAnyRequiredGroup(tacticalGoals, "COMPOSITE:CautiousOrDefensiveOrVeryDefensive", "Cautious, defensive, or very defensive mentality",
                 mentalityGoal(Mentality.CAUTIOUS),
                 mentalityGoal(Mentality.DEFENSIVE),
                 mentalityGoal(Mentality.VERY_DEFENSIVE));

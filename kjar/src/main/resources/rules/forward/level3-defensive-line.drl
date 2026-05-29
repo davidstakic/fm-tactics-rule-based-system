@@ -34,16 +34,62 @@ then
 end
 
 
-rule "FC L3 - Defensive line LOW - cautious or defensive mentality"
+rule "FC L3 - Defensive line LOW - cautious mentality"
     salience 29
     no-loop true
 
 when
     Level2Facts( 
     selectedMentality == Mentality.CAUTIOUS
-    ||
+     )
+
+    $facts : Level3Facts( 
+    defensiveLineHeight == null
+     )
+
+then
+    modify($facts) {
+        setDefensiveLineHeight( DefensiveLineHeight.LOW );
+    };
+    $facts.addExplanationStep( TacticalExplanationFactory.defensiveLine( DefensiveLineHeight.LOW, "the selected mentality asks the team to stay compact and protect space" ) );
+    update($facts);
+
+    System.out.println( "[FC:L3] defensiveLineHeight=LOW | reason=cautious mentality" );
+
+end
+
+
+rule "FC L3 - Defensive line LOW - defensive mentality"
+    salience 29
+    no-loop true
+
+when
+    Level2Facts( 
     selectedMentality == Mentality.DEFENSIVE
-    ||
+     )
+
+    $facts : Level3Facts( 
+    defensiveLineHeight == null
+     )
+
+then
+    modify($facts) {
+        setDefensiveLineHeight( DefensiveLineHeight.LOW );
+    };
+    $facts.addExplanationStep( TacticalExplanationFactory.defensiveLine( DefensiveLineHeight.LOW, "the selected mentality asks the team to stay compact and protect space" ) );
+    update($facts);
+
+    System.out.println( "[FC:L3] defensiveLineHeight=LOW | reason=defensive mentality" );
+
+end
+
+
+rule "FC L3 - Defensive line LOW - very defensive mentality"
+    salience 29
+    no-loop true
+
+when
+    Level2Facts( 
     selectedMentality == Mentality.VERY_DEFENSIVE
      )
 
@@ -58,7 +104,7 @@ then
     $facts.addExplanationStep( TacticalExplanationFactory.defensiveLine( DefensiveLineHeight.LOW, "the selected mentality asks the team to stay compact and protect space" ) );
     update($facts);
 
-    System.out.println( "[FC:L3] defensiveLineHeight=LOW | reason=cautious or defensive mentality" );
+    System.out.println( "[FC:L3] defensiveLineHeight=LOW | reason=very defensive mentality" );
 
 end
 
@@ -74,8 +120,6 @@ when
 
     Level2Facts( 
     selectedMentality == Mentality.ATTACKING
-    ||
-    selectedMentality == Mentality.VERY_ATTACKING
      )
 
     $facts : Level3Facts( 
@@ -90,6 +134,35 @@ then
     update($facts);
 
     System.out.println( "[FC:L3] defensiveLineHeight=HIGH | reason=high-line capable attacking team" );
+
+end
+
+
+rule "FC L3 - Defensive line HIGH - very attacking mentality"
+    salience 28
+    no-loop true
+
+when
+    TacticalAssistantInput( 
+    teamProfile.highLineCapability == true
+     )
+
+    Level2Facts( 
+    selectedMentality == Mentality.VERY_ATTACKING
+     )
+
+    $facts : Level3Facts( 
+    defensiveLineHeight == null
+     )
+
+then
+    modify($facts) {
+        setDefensiveLineHeight( DefensiveLineHeight.HIGH );
+    };
+    $facts.addExplanationStep( TacticalExplanationFactory.defensiveLine( DefensiveLineHeight.HIGH, "the team can handle a higher line and the mentality is very attacking" ) );
+    update($facts);
+
+    System.out.println( "[FC:L3] defensiveLineHeight=HIGH | reason=high-line capable very attacking team" );
 
 end
 

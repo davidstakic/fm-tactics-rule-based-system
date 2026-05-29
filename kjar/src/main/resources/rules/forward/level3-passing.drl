@@ -76,8 +76,6 @@ when
 
     Level2Facts( 
     selectedMentality == Mentality.DEFENSIVE
-    ||
-    selectedMentality == Mentality.CAUTIOUS
      )
 
     $facts : Level3Facts( 
@@ -96,7 +94,36 @@ then
 end
 
 
-rule "FC L3 - Passing SHORTER - creative midfield and good fitness"
+rule "FC L3 - Passing DIRECT - counter opportunity with cautious mentality"
+    salience 28
+    no-loop true
+
+when
+    Level1Facts( 
+    hasCounterOpportunity == true
+     )
+
+    Level2Facts( 
+    selectedMentality == Mentality.CAUTIOUS
+     )
+
+    $facts : Level3Facts( 
+    passingDirectness == null
+     )
+
+then
+    modify($facts) {
+        setPassingDirectness( PassingDirectness.DIRECT );
+    };
+    $facts.addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.DIRECT, "there is space to counter and the selected mentality is more protective" ) );
+    update($facts);
+
+    System.out.println( "[FC:L3] passingDirectness=DIRECT | reason=counter opportunity with cautious mentality" );
+
+end
+
+
+rule "FC L3 - Passing SHORTER - creative midfield and good fitness with positive mentality"
     salience 27
     no-loop true
 
@@ -111,7 +138,38 @@ when
 
     Level2Facts( 
     selectedMentality == Mentality.POSITIVE
-    ||
+     )
+
+    $facts : Level3Facts( 
+    passingDirectness == null
+     )
+
+then
+    modify($facts) {
+        setPassingDirectness( PassingDirectness.SHORTER );
+    };
+    $facts.addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.SHORTER, "the midfield is creative, the team is fit, and the mentality supports proactive possession" ) );
+    update($facts);
+
+    System.out.println( "[FC:L3] passingDirectness=SHORTER | reason=creative midfield and good fitness with positive mentality" );
+
+end
+
+
+rule "FC L3 - Passing SHORTER - creative midfield and good fitness with attacking mentality"
+    salience 27
+    no-loop true
+
+when
+    TacticalAssistantInput( 
+    teamProfile.midfieldQuality == MidfieldQuality.CREATIVE
+     )
+
+    Level1Facts( 
+    hasHighFitness == true
+     )
+
+    Level2Facts( 
     selectedMentality == Mentality.ATTACKING
      )
 
@@ -126,7 +184,7 @@ then
     $facts.addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.SHORTER, "the midfield is creative, the team is fit, and the mentality supports proactive possession" ) );
     update($facts);
 
-    System.out.println( "[FC:L3] passingDirectness=SHORTER | reason=creative midfield and good fitness" );
+    System.out.println( "[FC:L3] passingDirectness=SHORTER | reason=creative midfield and good fitness with attacking mentality" );
 
 end
 
