@@ -1,0 +1,287 @@
+package com.ftn.sbnz.kjar.rules.forward;
+
+import com.ftn.sbnz.model.enums.AttackType;
+import com.ftn.sbnz.model.enums.Mentality;
+import com.ftn.sbnz.model.enums.PhysicalProfile;
+import com.ftn.sbnz.model.enums.PressingIntensity;
+import com.ftn.sbnz.model.forward.TacticalAssistantInput;
+import com.ftn.sbnz.model.forward.Level1Facts;
+import com.ftn.sbnz.model.forward.Level2Facts;
+import com.ftn.sbnz.model.forward.Level3Facts;
+import com.ftn.sbnz.model.forward.factory.TacticalExplanationFactory;
+
+
+rule "FC L3 - Pressing HIGH - very attacking mentality"
+    salience 30
+    no-loop true
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.VERY_ATTACKING
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.HIGH ),
+        addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.HIGH, "the selected mentality is aggressive and supports early pressure" ) )
+    };
+
+    System.out.println( "[FC:L3] pressingIntensity=HIGH | reason=very attacking mentality" );
+
+end
+
+
+rule "FC L3 - Pressing HIGH - attacking mentality"
+    salience 30
+    no-loop true
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.ATTACKING
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.HIGH ),
+        addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.HIGH, "the selected mentality is aggressive and supports early pressure" ) )
+    };
+
+    System.out.println( "[FC:L3] pressingIntensity=HIGH | reason=attacking mentality" );
+
+end
+
+
+rule "FC L3 - Pressing HIGH - positive with pressing forwards"
+    salience 29
+    no-loop true
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.POSITIVE
+     )
+
+    TacticalAssistantInput( 
+    teamProfile.attackType == AttackType.PRESSING_ATTACKERS
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.HIGH ),
+        addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.HIGH, "the team has forwards suited to pressing and the mentality is positive" ) )
+    };
+
+    System.out.println( "[FC:L3] pressingIntensity=HIGH | reason=positive mentality with pressing attackers" );
+
+end
+
+
+rule "FC L3 - Pressing MEDIUM - positive without pressing forwards"
+    salience 28
+    no-loop true
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.POSITIVE
+     )
+
+    TacticalAssistantInput( 
+    teamProfile.attackType != AttackType.PRESSING_ATTACKERS
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.MEDIUM ),
+        addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.MEDIUM, "the mentality is positive, but the attack is not built around constant forward pressing" ) )
+    };
+
+    System.out.println( "[FC:L3] pressingIntensity=MEDIUM | reason=positive mentality without pressing attackers" );
+
+end
+
+
+rule "FC L3 - Pressing MEDIUM - balanced fast team"
+    salience 27
+    no-loop true
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.BALANCED
+     )
+
+    TacticalAssistantInput( 
+    teamProfile.physicalProfile == PhysicalProfile.FAST
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.MEDIUM ),
+        addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.MEDIUM, "a balanced mentality and fast players allow useful pressure without overcommitting" ) )
+    };
+
+    System.out.println( "[FC:L3] pressingIntensity=MEDIUM | reason=balanced mentality with fast team" );
+
+end
+
+
+rule "FC L3 - Pressing LOW - balanced non-fast team"
+    salience 26
+    no-loop true
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.BALANCED
+     )
+
+    TacticalAssistantInput( 
+    teamProfile.physicalProfile != PhysicalProfile.FAST
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.LOW ),
+        addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.LOW, "the team does not have a clear pace advantage, so compactness is safer" ) )
+    };
+
+    System.out.println( "[FC:L3] pressingIntensity=LOW | reason=balanced mentality without pace advantage" );
+
+end
+
+
+rule "FC L3 - Pressing LOW - cautious mentality"
+    salience 25
+    no-loop true
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.CAUTIOUS
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.LOW ),
+        addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.LOW, "the mentality is cautious, so the team should protect its shape" ) )
+    };
+
+    System.out.println( "[FC:L3] pressingIntensity=LOW | reason=cautious mentality" );
+
+end
+
+
+rule "FC L3 - Pressing LOW - defensive mentality"
+    salience 25
+    no-loop true
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.DEFENSIVE
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.LOW ),
+        addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.LOW, "the mentality is defensive, so the team should protect its shape" ) )
+    };
+
+    System.out.println( "[FC:L3] pressingIntensity=LOW | reason=defensive mentality" );
+
+end
+
+
+rule "FC L3 - Pressing LOW - very defensive mentality"
+    salience 25
+    no-loop true
+
+when
+    Level2Facts( 
+    selectedMentality == Mentality.VERY_DEFENSIVE
+     )
+
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.LOW ),
+        addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.LOW, "the mentality is very defensive, so the team should protect its shape" ) )
+    };
+
+    System.out.println( "[FC:L3] pressingIntensity=LOW | reason=very defensive mentality" );
+
+end
+
+
+rule "FC L3 - Pressing MEDIUM - reduce against aggressive opponent"
+    salience 24
+    no-loop true
+
+when
+    $facts : Level3Facts( 
+    pressingIntensity == PressingIntensity.HIGH
+     )
+
+    Level1Facts( 
+    isAggressiveOpponent == true
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.MEDIUM ),
+        addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.MEDIUM, "the opponent is also aggressive, so lowering the press helps avoid an open match" ) )
+    };
+
+    System.out.println( "[FC:L3] pressingIntensity=MEDIUM | reason=reduce high press against aggressive opponent" );
+
+end
+
+
+rule "FC L3 - Pressing MEDIUM - default"
+    salience 10
+    no-loop true
+
+when
+    $facts : Level3Facts( 
+    pressingIntensity == null
+     )
+
+then
+    modify($facts) {
+        setPressingIntensity( PressingIntensity.MEDIUM ),
+        addExplanationStep( TacticalExplanationFactory.pressing( PressingIntensity.MEDIUM, "there is no stronger reason to use either a very aggressive or very passive press" ) )
+    };
+
+    System.out.println( "[FC:L3] pressingIntensity=MEDIUM | reason=default" );
+
+end

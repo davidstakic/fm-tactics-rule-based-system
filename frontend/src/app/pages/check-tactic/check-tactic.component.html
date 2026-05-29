@@ -1,0 +1,60 @@
+<section class="check-page">
+  <div class="check-shell">
+    <div class="check-layout">
+      <form class="check-panel" [formGroup]="form" (ngSubmit)="submit()">
+        <h2>Tactical Goal</h2>
+
+        <label for="category">Tactical instruction</label>
+        <select id="category" class="input" formControlName="category">
+          <option *ngFor="let category of goalCategories" [value]="category.value">
+            {{ category.label }}
+          </option>
+        </select>
+
+        <label for="targetValue">Target value</label>
+        <select id="targetValue" class="input" formControlName="targetValue">
+          <option *ngFor="let option of selectedGoalOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+
+        <button class="submit-button" type="submit" [disabled]="isLoading">
+          {{ isLoading ? 'Generating...' : 'Generate Requirements' }}
+        </button>
+
+        <div *ngIf="errorMessage" class="error-banner">
+          {{ errorMessage }}
+        </div>
+      </form>
+
+      <section class="result-panel" *ngIf="response; else emptyState">
+        <div class="result-header">
+          <p class="section-title">REQUIREMENTS</p>
+          <h2>{{ response.targetGoalTitle }}</h2>
+          <span>{{ response.explanation }}</span>
+        </div>
+
+        <div class="requirements-list" *ngIf="response.requirements.length; else noRequirements">
+          <article class="requirement-card" *ngFor="let requirement of response.requirements">
+            <h3>{{ requirement.title }}</h3>
+            <p>{{ requirement.description }}</p>
+          </article>
+        </div>
+      </section>
+
+      <ng-template #emptyState>
+        <section class="result-panel muted-panel">
+          <p class="section-title">REQUIREMENTS</p>
+          <h2>Choose an instruction</h2>
+          <span>Generate the requirements to see which team, opponent, and match conditions can support it.</span>
+        </section>
+      </ng-template>
+
+      <ng-template #noRequirements>
+        <div class="empty-requirements">
+          This tactic has no strict input requirements, so it can fit a wider range of match contexts.
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</section>

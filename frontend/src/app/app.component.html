@@ -1,0 +1,32 @@
+<div class="app-shell">
+  <nav class="top-nav">
+    <a class="brand" routerLink="/generate" aria-label="FM Tactical Assistant home">
+      <img src="/assets/logo.png" alt="FM Tactical Assistant logo">
+      <div>
+        <strong>FM Tactical Assistant</strong>
+        <span>{{ slogan }}</span>
+      </div>
+    </a>
+
+    <div class="nav-tabs" aria-label="Primary navigation">
+      <a
+        routerLink="/generate"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Generate Tactic
+      </a>
+      <a
+        routerLink="/check"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Check Tactic
+      </a>
+    </div>
+  </nav>
+
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+</div>

@@ -1,0 +1,234 @@
+package com.ftn.sbnz.kjar.rules.forward;
+
+import com.ftn.sbnz.model.enums.CompetitionType;
+import com.ftn.sbnz.model.enums.DefenseLineEngagement;
+import com.ftn.sbnz.model.enums.LocationType;
+import com.ftn.sbnz.model.enums.MatchImportance;
+import com.ftn.sbnz.model.enums.OpponentWeakness;
+import com.ftn.sbnz.model.enums.PlayingStyle;
+import com.ftn.sbnz.model.forward.TacticalAssistantInput;
+import com.ftn.sbnz.model.forward.Level1Facts;
+
+
+rule "FC L1 - Medium fitness"
+    salience 95
+    no-loop true
+
+when
+    $input : TacticalAssistantInput( 
+    teamProfile.tacticalFitness >= 40,
+    teamProfile.tacticalFitness <= 69
+     )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        setHasMediumFitness( true )
+    };
+
+    System.out.println( "[FC:L1] HasMediumFitness=true | reason=medium tactical fitness" );
+
+end
+
+
+rule "FC L1 - Difficult away match"
+    salience 90
+    no-loop true
+
+when
+    $input : TacticalAssistantInput( 
+    matchContext.location == LocationType.AWAY,
+    matchContext.importance == MatchImportance.HIGH
+     )
+
+    $facts : Level1Facts( 
+    isUnderdog == true
+     )
+
+then
+    modify($facts) {
+        setIsDifficultAwayMatch( true )
+    };
+
+    System.out.println( "[FC:L1] IsDifficultAwayMatch=true | reason=away underdog in high importance match" );
+
+end
+
+
+rule "FC L1 - Must win"
+    salience 95
+    no-loop true
+
+when
+    $input : TacticalAssistantInput( 
+    matchContext.competitionType == CompetitionType.CUP,
+    matchContext.importance == MatchImportance.HIGH
+     )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        setMustWin( true )
+    };
+
+    System.out.println( "[FC:L1] MustWin=true | reason=high importance cup match" );
+
+end
+
+
+rule "FC L1 - Dominant position"
+    salience 90
+    no-loop true
+
+when
+    $input : TacticalAssistantInput( 
+    matchContext.location == LocationType.HOME
+     )
+
+    $facts : Level1Facts( 
+    isFavorite == true
+     )
+
+then
+    modify($facts) {
+        setHasDominantPosition( true )
+    };
+
+    System.out.println( "[FC:L1] HasDominantPosition=true | reason=favorite at home" );
+
+end
+
+
+rule "FC L1 - Can settle for draw"
+    salience 90
+    no-loop true
+
+when
+    $input : TacticalAssistantInput( 
+    matchContext.importance == MatchImportance.MEDIUM,
+    matchContext.competitionType == CompetitionType.LEAGUE
+     )
+
+    $facts : Level1Facts( 
+    isEvenlyMatched == true
+     )
+
+then
+    modify($facts) {
+        setCanDrawMatch( true )
+    };
+
+    System.out.println( "[FC:L1] CanDrawMatch=true | reason=even league match with medium importance" );
+
+end
+
+
+rule "FC L1 - Cautious match"
+    salience 90
+    no-loop true
+
+when
+    $input : TacticalAssistantInput( 
+    matchContext.importance == MatchImportance.HIGH
+     )
+
+    $facts : Level1Facts( 
+    isUnderdog == true
+     )
+
+then
+    modify($facts) {
+        setIsCautiousMatch( true )
+    };
+
+    System.out.println( "[FC:L1] IsCautiousMatch=true | reason=underdog in high importance match" );
+
+end
+
+
+rule "FC L1 - Counter opportunity slow defenders"
+    salience 95
+    no-loop true
+
+when
+    $input : TacticalAssistantInput( 
+    opponentProfile.weakness == OpponentWeakness.SLOW_DEFENDERS
+     )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        setHasCounterOpportunity( true )
+    };
+
+    System.out.println( "[FC:L1] HasCounterOpportunity=true | reason=opponent has slow defenders" );
+
+end
+
+
+rule "FC L1 - Counter opportunity vulnerable on flanks"
+    salience 95
+    no-loop true
+
+when
+    $input : TacticalAssistantInput( 
+    opponentProfile.weakness == OpponentWeakness.VULNERABLE_ON_FLANKS
+     )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        setHasCounterOpportunity( true )
+    };
+
+    System.out.println( "[FC:L1] HasCounterOpportunity=true | reason=opponent vulnerable on flanks" );
+
+end
+
+
+rule "FC L1 - Aggressive opponent"
+    salience 95
+    no-loop true
+
+when
+    $input : TacticalAssistantInput( 
+    opponentProfile.lineEngagement == DefenseLineEngagement.HIGH_PRESS,
+    opponentProfile.playingStyle == PlayingStyle.POSSESSION_BASED
+     )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        setIsAggressiveOpponent( true )
+    };
+
+    System.out.println( "[FC:L1] IsAggressiveOpponent=true | reason=high press possession opponent" );
+
+end
+
+
+rule "FC L1 - Passive opponent"
+    salience 95
+    no-loop true
+
+when
+    $input : TacticalAssistantInput( 
+    opponentProfile.lineEngagement == DefenseLineEngagement.LOW_BLOCK,
+    opponentProfile.playingStyle != PlayingStyle.COUNTER_ATTACK
+     )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        setIsPassiveOpponent( true )
+    };
+
+    System.out.println( "[FC:L1] IsPassiveOpponent=true | reason=low block non-counter opponent" );
+
+end

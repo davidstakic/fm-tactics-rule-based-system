@@ -1,0 +1,42 @@
+template header
+parameter
+operator
+value
+flag_name
+
+package com.ftn.sbnz.kjar.rules.forward;
+
+import function com.ftn.sbnz.kjar.utils.RuleUtils.countWinsInForm;
+
+import com.ftn.sbnz.model.enums.CompetitionType;
+import com.ftn.sbnz.model.enums.DefenseLineEngagement;
+import com.ftn.sbnz.model.enums.LocationType;
+import com.ftn.sbnz.model.enums.MatchImportance;
+import com.ftn.sbnz.model.enums.OpponentWeakness;
+import com.ftn.sbnz.model.enums.PlayingStyle;
+import com.ftn.sbnz.model.forward.TacticalAssistantInput;
+import com.ftn.sbnz.model.forward.Level1Facts;
+
+template "Level 1 Facts"
+
+rule "FC L1 - @{flag_name}"
+salience 100
+no-loop true
+
+when
+    $input : TacticalAssistantInput(
+        @{parameter} @{operator} @{value}
+    )
+
+    $facts : Level1Facts()
+
+then
+    modify($facts) {
+        set@{flag_name}(true)
+    };
+
+    System.out.println("[FC:L1] @{flag_name}=true");
+
+end
+
+end template

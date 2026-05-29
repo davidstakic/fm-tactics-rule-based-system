@@ -1,0 +1,12 @@
+package com.ftn.sbnz.kjar.rules.backward;
+
+import com.ftn.sbnz.model.backward.TacticalGoal;
+
+query requirementsForGoal(String $target, String $requirement, String $level, String $explanation)
+    TacticalGoal( goal == $target, requirement == $requirement, level == $level, explanation == $explanation )
+    or
+    ( 
+    TacticalGoal( goal == $target, $next : requirement )
+    and requirementsForGoal( $next, $requirement, $level, $explanation; )
+     )
+end

@@ -1,8 +1,8 @@
 package com.ftn.sbnz.service;
 
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieScanner;
-import org.kie.api.runtime.KieContainer;
+import com.ftn.sbnz.kjar.factory.BackwardChainingKieBaseFactory;
+import com.ftn.sbnz.kjar.factory.ForwardChainingKieBaseFactory;
+import org.kie.api.KieBase;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -15,13 +15,13 @@ public class ServiceApplication {
 	}
 
 	@Bean
-	public KieContainer kieContainer() {
-		KieServices ks = KieServices.Factory.get();
-		KieContainer kContainer = ks
-				.newKieContainer(ks.newReleaseId("com.ftn.sbnz", "skjar", "0.0.1-SNAPSHOT"));
-		KieScanner kScanner = ks.newKieScanner(kContainer);
-		kScanner.start(1000);
-		return kContainer;
+	public KieBase forwardChainingKieBase() {
+		return ForwardChainingKieBaseFactory.create();
+	}
+
+	@Bean
+	public KieBase backwardChainingKieBase() {
+		return BackwardChainingKieBaseFactory.create();
 	}
 
 }

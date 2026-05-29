@@ -1,0 +1,33 @@
+package com.ftn.sbnz.kjar.rules.forward;
+
+import com.ftn.sbnz.model.forward.Level2Facts;
+import com.ftn.sbnz.model.forward.FormationScore;
+
+rule "FC L2 - Select highest scoring formation"
+    salience 50
+    no-loop true
+
+when
+    $bestScore : Integer() from accumulate( 
+    FormationScore( $score : totalScore ),
+    max( $score )
+     )
+
+    FormationScore( 
+    $bestFormation : formation,
+    totalScore == $bestScore
+     )
+
+    $facts : Level2Facts( 
+    selectedFormation == null
+     )
+
+then
+    modify($facts) {
+        setSelectedFormation( $bestFormation ),
+        setFormationScore( $bestScore );
+    };
+
+    System.out.println( "[FC:L2] selectedFormation=" + $bestFormation + " | score=" + $bestScore );
+
+end

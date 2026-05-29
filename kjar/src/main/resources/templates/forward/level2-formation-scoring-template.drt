@@ -1,0 +1,62 @@
+template header
+input_conditions
+fact_conditions
+formation_group
+number_of_points
+description
+
+package com.ftn.sbnz.kjar.rules.forward;
+
+import java.util.List;
+import function com.ftn.sbnz.kjar.utils.RuleUtils.addScoreToFormations;
+import com.ftn.sbnz.model.enums.AttackType;
+import com.ftn.sbnz.model.enums.MidfieldQuality;
+import com.ftn.sbnz.model.forward.TacticalAssistantInput;
+import com.ftn.sbnz.model.forward.FormationScore;
+import com.ftn.sbnz.model.forward.Level1Facts;
+
+template "Level 2 Formation scoring"
+
+rule "FC L2 - Formation score - @{description}"
+salience 60
+no-loop true
+
+when
+    $input : TacticalAssistantInput(
+        @{input_conditions}
+    )
+
+    $facts : Level1Facts(
+        @{fact_conditions}
+    )
+
+    not String(this == "formation-scoring:@{description}")
+
+    $scores : List()
+        from collect(FormationScore())
+
+then
+    String[] formations = new String[] { @{formation_group} };
+
+    addScoreToFormations(
+        $scores,
+        formations,
+        "@{description}",
+        @{number_of_points}
+    );
+
+    for (Object obj : $scores) {
+        update(obj);
+    }
+
+    insert("formation-scoring:@{description}");
+
+    System.out.println(
+        "[FC:L2] formationScoreDelta=@{number_of_points}"
+        + " | formations=" + java.util.Arrays.toString(formations)
+        + " | reason=@{description}"
+    );
+
+end
+
+end template

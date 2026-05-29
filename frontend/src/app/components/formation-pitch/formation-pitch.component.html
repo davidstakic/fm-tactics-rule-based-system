@@ -1,0 +1,19 @@
+<div class="pitch" aria-label="Formation layout">
+  <div class="stripe stripe-top"></div>
+  <div class="stripe stripe-bottom"></div>
+  <div class="center-line"></div>
+  <div class="center-circle"></div>
+  <div class="penalty-box top"></div>
+  <div class="penalty-box bottom"></div>
+  <div class="goal-box top"></div>
+  <div class="goal-box bottom"></div>
+
+  <div
+    class="player"
+    *ngFor="let player of players()"
+    [style.left.%]="player.x"
+    [style.top.%]="player.y"
+  >
+    {{ player.position }}
+  </div>
+</div>

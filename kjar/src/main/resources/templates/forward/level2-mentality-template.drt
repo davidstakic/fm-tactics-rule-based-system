@@ -1,0 +1,55 @@
+template header
+conditions
+blocking_flags
+mentality
+priority
+description
+
+package com.ftn.sbnz.kjar.rules.forward;
+
+import com.ftn.sbnz.model.enums.Mentality;
+import com.ftn.sbnz.model.forward.TacticalAssistantInput;
+import com.ftn.sbnz.model.forward.Level1Facts;
+import com.ftn.sbnz.model.forward.Level2Facts;
+import com.ftn.sbnz.model.forward.factory.TacticalExplanationFactory;
+
+template "Level 2 Choosing mentality"
+
+rule "FC L2 - Mentality @{mentality} - priority @{priority}"
+salience @{priority}
+no-loop true
+
+when
+    $input : TacticalAssistantInput()
+
+    $facts : Level1Facts(
+        @{conditions}
+        @{blocking_flags}
+    )
+
+    $existing : Level2Facts(
+        selectedMentality == null
+    )
+
+then
+    modify($existing) {
+        setSelectedMentality(
+            Mentality.@{mentality}
+        ),
+        addExplanationStep(
+            TacticalExplanationFactory.mentality(
+                Mentality.@{mentality},
+                "@{description}"
+            )
+        )
+    };
+
+    System.out.println(
+        "[FC:L2] selectedMentality=@{mentality}"
+        + " | priority=@{priority}"
+        + " | reason=@{description}"
+    );
+
+end
+
+end template
