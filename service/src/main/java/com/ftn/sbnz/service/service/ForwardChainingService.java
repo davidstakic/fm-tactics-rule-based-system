@@ -15,22 +15,6 @@ public class ForwardChainingService {
     }
 
     public TacticalRecommendation recommend(TacticalAssistantInput input) {
-        validateInput(input);
         return tacticalSessionService.runForwardChaining(input);
-    }
-
-    private void validateInput(TacticalAssistantInput input) {
-        if (input == null) {
-            throw new IllegalArgumentException("Tactical input is required.");
-        }
-        if (input.getTeamProfile() == null) {
-            throw new IllegalArgumentException("teamProfile is required.");
-        }
-        if (input.getOpponentProfile() == null) {
-            throw new IllegalArgumentException("opponentProfile is required.");
-        }
-        if (input.getMatchContext() == null) {
-            throw new IllegalArgumentException("matchContext is required.");
-        }
     }
 }

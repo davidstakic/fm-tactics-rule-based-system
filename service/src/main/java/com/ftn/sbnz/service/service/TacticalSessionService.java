@@ -66,7 +66,7 @@ public class TacticalSessionService {
     public synchronized List<CEPRecommendation> startMatch() {
         KieSession kieSession = requireActiveSession();
         if (matchStarted) {
-            throw new IllegalArgumentException("Match is already started.");
+            throw new IllegalArgumentException("The match has already been started.");
         }
         matchStarted = true;
         return insertMatchState(kieSession, new MatchStateEvent(
@@ -79,7 +79,7 @@ public class TacticalSessionService {
 
     public synchronized List<CEPRecommendation> insertMatchState(MatchStateEvent matchStateEvent) {
         if (!matchStarted) {
-            throw new IllegalArgumentException("Match must be started before sending match state.");
+            throw new IllegalArgumentException("Start the match before sending a match update.");
         }
         return insertMatchState(requireActiveSession(), matchStateEvent);
     }
@@ -111,7 +111,7 @@ public class TacticalSessionService {
 
     private KieSession requireActiveSession() {
         if (activeSession == null) {
-            throw new IllegalArgumentException("Forward chaining recommendation must be created before starting a match.");
+            throw new IllegalArgumentException("Generate a tactical recommendation before starting the match.");
         }
         return activeSession;
     }

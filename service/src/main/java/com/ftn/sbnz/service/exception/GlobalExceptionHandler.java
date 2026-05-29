@@ -22,7 +22,8 @@ public class GlobalExceptionHandler {
         String message = exception.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .map(error -> error.getDefaultMessage())
+                .distinct()
                 .collect(Collectors.joining("; "));
 
         if (message.isEmpty()) {
@@ -30,7 +31,12 @@ public class GlobalExceptionHandler {
                     .getGlobalErrors()
                     .stream()
                     .map(error -> error.getDefaultMessage())
+                    .distinct()
                     .collect(Collectors.joining("; "));
+        }
+
+        if (message.isEmpty()) {
+            message = "Please check the submitted values and try again.";
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -40,13 +46,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleConstraintViolation(ConstraintViolationException exception) {
         String message = exception.getConstraintViolations()
                 .stream()
-                .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
+                .map(violation -> violation.getMessage())
+                .distinct()
                 .collect(Collectors.joining("; "));
+        if (message.isEmpty()) {
+            message = "Please check the submitted values and try again.";
+        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleUnreadableMessage(HttpMessageNotReadableException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request body is invalid or missing.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Some submitted values are missing or not in the expected format.");
     }
 }

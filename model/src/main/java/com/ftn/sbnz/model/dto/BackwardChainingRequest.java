@@ -3,7 +3,7 @@ package com.ftn.sbnz.model.dto;
 import jakarta.validation.constraints.NotBlank;
 
 public class BackwardChainingRequest {
-    @NotBlank(message = "targetGoal is required.")
+    @NotBlank(message = "Choose a tactical idea to check.")
     private String targetGoal;
 
     public BackwardChainingRequest() {

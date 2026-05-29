@@ -3,6 +3,7 @@ import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BackwardChainingResponse } from '../../models/backward-chaining.model';
+import { extractApiErrorMessage } from '../../services/api-error-message';
 import { BackwardChainingApiService } from '../../services/backward-chaining-api.service';
 
 type GoalCategory =
@@ -142,8 +143,11 @@ export class CheckTacticComponent implements OnInit {
         this.response = response;
         this.isLoading = false;
       },
-      error: () => {
-        this.errorMessage = 'Unable to check this tactic right now. Make sure the service is running.';
+      error: (error: unknown) => {
+        this.errorMessage = extractApiErrorMessage(
+          error,
+          'We could not check this tactical idea right now. Please try again.'
+        );
         this.isLoading = false;
       },
     });

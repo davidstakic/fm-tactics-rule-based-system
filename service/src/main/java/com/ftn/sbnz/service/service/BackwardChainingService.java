@@ -29,7 +29,7 @@ public class BackwardChainingService {
 
     public BackwardChainingResponse explain(String targetGoal) {
         if (targetGoal == null || targetGoal.trim().isEmpty()) {
-            throw new IllegalArgumentException("targetGoal is required.");
+            throw new IllegalArgumentException("Choose a tactical idea to check.");
         }
 
         KieSession kieSession = backwardChainingKieBase.newKieSession();
@@ -40,7 +40,7 @@ public class BackwardChainingService {
 
             List<TacticalGoal> requirements = findRequirementsForGoal(kieSession, targetGoal.trim());
             if (requirements.isEmpty()) {
-                throw new IllegalArgumentException("No backward chaining requirements found for goal: " + targetGoal);
+                throw new IllegalArgumentException("No supporting conditions were found for the selected tactical idea.");
             }
 
             return new BackwardChainingResponse(

@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { CEPRecommendation, MatchResult } from '../../models/cep.model';
+import { extractApiErrorMessage } from '../../services/api-error-message';
 import { CEPApiService } from '../../services/cep-api.service';
 
 @Component({
@@ -145,18 +146,9 @@ export class LiveMatchMonitorComponent {
   }
 
   private extractErrorMessage(error: unknown): string {
-    if (typeof error === 'object' && error !== null && 'error' in error) {
-      const response = error as { error?: unknown; message?: unknown };
-
-      if (typeof response.error === 'string' && response.error.trim()) {
-        return response.error;
-      }
-
-      if (typeof response.message === 'string' && response.message.trim()) {
-        return response.message;
-      }
-    }
-
-    return 'Unable to process live match state. Check that the service project is running.';
+    return extractApiErrorMessage(
+      error,
+      'We could not process this match update right now. Please try again.'
+    );
   }
 }

@@ -8,21 +8,23 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public class CEPMatchStateRequest {
-    @PositiveOrZero(message = "timestamp must be zero or positive.")
+    @PositiveOrZero(message = "Match state timestamp must be zero or positive.")
     private Long timestamp;
 
-    @NotNull(message = "currentMinute is required.")
-    @Min(value = 0, message = "currentMinute must be at least 0.")
-    @Max(value = 120, message = "currentMinute must be at most 120.")
+    @NotNull(message = "Current minute is required.")
+    @Min(value = 0, message = "Current minute must be at least 0.")
+    @Max(value = 120, message = "Current minute must be at most 120.")
     private Integer currentMinute;
 
-    @NotNull(message = "currentResult is required.")
+    @NotNull(message = "Current result is required.")
     private MatchResult currentResult;
 
-    @PositiveOrZero(message = "ownTeamRedCards must be zero or positive.")
+    @NotNull(message = "Own team red card count is required.")
+    @PositiveOrZero(message = "Own team red card count must be zero or positive.")
     private Integer ownTeamRedCards;
 
-    @PositiveOrZero(message = "opponentRedCards must be zero or positive.")
+    @NotNull(message = "Opponent red card count is required.")
+    @PositiveOrZero(message = "Opponent red card count must be zero or positive.")
     private Integer opponentRedCards;
 
     public CEPMatchStateRequest() {

@@ -17,6 +17,7 @@ import {
   PlayingStyle,
   TacticalRecommendation,
 } from '../../models/tactical-recommendation.model';
+import { extractApiErrorMessage } from '../../services/api-error-message';
 import { ForwardChainingApiService } from '../../services/forward-chaining-api.service';
 
 @Component({
@@ -104,7 +105,7 @@ export class GenerateTacticComponent {
     this.form.markAllAsTouched();
 
     if (this.form.invalid) {
-      this.errorMessage = 'Please fix the highlighted input values.';
+      this.errorMessage = 'Please review the highlighted fields before generating a recommendation.';
       return;
     }
 
@@ -162,18 +163,9 @@ export class GenerateTacticComponent {
   }
 
   private extractErrorMessage(error: unknown): string {
-    if (typeof error === 'object' && error !== null && 'error' in error) {
-      const response = error as { error?: unknown; message?: unknown };
-
-      if (typeof response.error === 'string' && response.error.trim()) {
-        return response.error;
-      }
-
-      if (typeof response.message === 'string' && response.message.trim()) {
-        return response.message;
-      }
-    }
-
-    return 'Unable to generate recommendation. Check that the service project is running.';
+    return extractApiErrorMessage(
+      error,
+      'We could not generate a recommendation right now. Please try again.'
+    );
   }
 }
