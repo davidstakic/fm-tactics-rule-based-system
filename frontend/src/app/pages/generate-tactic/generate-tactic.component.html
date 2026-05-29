@@ -90,6 +90,15 @@
 
       <div class="form-actions">
         <button
+          type="button"
+          [disabled]="isSubmitting"
+          class="reset-button"
+          (click)="resetToDefaults()"
+        >
+          Reset To Defaults
+        </button>
+
+        <button
           type="submit"
           [disabled]="isSubmitting"
           class="submit-button"

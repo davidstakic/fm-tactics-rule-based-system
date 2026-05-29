@@ -20,6 +20,23 @@ import {
 import { extractApiErrorMessage } from '../../services/api-error-message';
 import { ForwardChainingApiService } from '../../services/forward-chaining-api.service';
 
+const DEFAULT_TACTIC_FORM_VALUE = {
+  teamStrength: 3,
+  formLast5Matches: 'W-W-D-L-W',
+  tacticalFitness: 75,
+  physicalProfile: 'FAST' as PhysicalProfile,
+  midfieldQuality: 'BALANCED' as MidfieldQuality,
+  highLineCapability: true,
+  attackType: 'WING_PLAY' as AttackType,
+  opponentStrength: 3,
+  playingStyle: 'POSSESSION_BASED' as PlayingStyle,
+  lineEngagement: 'MID_BLOCK' as DefenseLineEngagement,
+  weakness: 'NO_OBVIOUS_WEAKNESS' as OpponentWeakness,
+  competitionType: 'LEAGUE' as CompetitionType,
+  importance: 'MEDIUM' as MatchImportance,
+  location: 'HOME' as LocationType,
+};
+
 @Component({
   selector: 'app-generate-tactic',
   standalone: true,
@@ -85,20 +102,20 @@ export class GenerateTacticComponent {
   ]);
 
   readonly form = this.fb.nonNullable.group({
-    teamStrength: [3, [Validators.required, Validators.min(1), Validators.max(5)]],
-    formLast5Matches: ['W-W-D-L-W', [Validators.required, Validators.pattern(/^[WDL](?:-[WDL]){4}$/i)]],
-    tacticalFitness: [75, [Validators.required, Validators.min(0), Validators.max(100)]],
-    physicalProfile: ['FAST' as PhysicalProfile, Validators.required],
-    midfieldQuality: ['BALANCED' as MidfieldQuality, Validators.required],
-    highLineCapability: [true, Validators.required],
-    attackType: ['WING_PLAY' as AttackType, Validators.required],
-    opponentStrength: [3, [Validators.required, Validators.min(1), Validators.max(5)]],
-    playingStyle: ['POSSESSION_BASED' as PlayingStyle, Validators.required],
-    lineEngagement: ['MID_BLOCK' as DefenseLineEngagement, Validators.required],
-    weakness: ['NO_OBVIOUS_WEAKNESS' as OpponentWeakness, Validators.required],
-    competitionType: ['LEAGUE' as CompetitionType, Validators.required],
-    importance: ['MEDIUM' as MatchImportance, Validators.required],
-    location: ['HOME' as LocationType, Validators.required],
+    teamStrength: [DEFAULT_TACTIC_FORM_VALUE.teamStrength, [Validators.required, Validators.min(1), Validators.max(5)]],
+    formLast5Matches: [DEFAULT_TACTIC_FORM_VALUE.formLast5Matches, [Validators.required, Validators.pattern(/^[WDL](?:-[WDL]){4}$/i)]],
+    tacticalFitness: [DEFAULT_TACTIC_FORM_VALUE.tacticalFitness, [Validators.required, Validators.min(0), Validators.max(100)]],
+    physicalProfile: [DEFAULT_TACTIC_FORM_VALUE.physicalProfile, Validators.required],
+    midfieldQuality: [DEFAULT_TACTIC_FORM_VALUE.midfieldQuality, Validators.required],
+    highLineCapability: [DEFAULT_TACTIC_FORM_VALUE.highLineCapability, Validators.required],
+    attackType: [DEFAULT_TACTIC_FORM_VALUE.attackType, Validators.required],
+    opponentStrength: [DEFAULT_TACTIC_FORM_VALUE.opponentStrength, [Validators.required, Validators.min(1), Validators.max(5)]],
+    playingStyle: [DEFAULT_TACTIC_FORM_VALUE.playingStyle, Validators.required],
+    lineEngagement: [DEFAULT_TACTIC_FORM_VALUE.lineEngagement, Validators.required],
+    weakness: [DEFAULT_TACTIC_FORM_VALUE.weakness, Validators.required],
+    competitionType: [DEFAULT_TACTIC_FORM_VALUE.competitionType, Validators.required],
+    importance: [DEFAULT_TACTIC_FORM_VALUE.importance, Validators.required],
+    location: [DEFAULT_TACTIC_FORM_VALUE.location, Validators.required],
   });
 
   submit(): void {
@@ -124,6 +141,14 @@ export class GenerateTacticComponent {
           this.errorMessage = this.extractErrorMessage(error);
         },
       });
+  }
+
+  resetToDefaults(): void {
+    this.form.reset(DEFAULT_TACTIC_FORM_VALUE);
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+    this.errorMessage = '';
+    this.recommendation = null;
   }
 
   isInvalid(controlName: keyof typeof this.form.controls): boolean {

@@ -69,15 +69,14 @@ label {
 
 .form-actions {
   display: flex;
+  gap: 12px;
   justify-content: flex-end;
   margin-top: 16px;
 }
 
-.submit-button {
-  background: #7c3aed;
-  border: 0;
+.submit-button,
+.reset-button {
   border-radius: 8px;
-  color: #fbfaff;
   cursor: pointer;
   font-weight: 800;
   min-height: 46px;
@@ -86,13 +85,29 @@ label {
   width: min(360px, 100%);
 }
 
-.submit-button:hover {
+.submit-button {
+  background: #7c3aed;
+  border: 0;
+  color: #fbfaff;
+}
+
+.reset-button {
+  background: transparent;
+  border: 1px solid rgba(196, 181, 253, 0.42);
+  color: #ddd6fe;
+  width: min(220px, 100%);
+}
+
+.submit-button:hover,
+.reset-button:hover {
   filter: brightness(1.08);
   transform: translateY(-1px);
 }
 
-.submit-button:disabled {
+.submit-button:disabled,
+.reset-button:disabled {
   background: #4b465c;
+  border-color: transparent;
   color: #b8b0ca;
   cursor: wait;
   transform: none;
@@ -104,10 +119,12 @@ label {
   }
 
   .form-actions {
+    flex-direction: column-reverse;
     justify-content: stretch;
   }
 
-  .submit-button {
+  .submit-button,
+  .reset-button {
     width: 100%;
   }
 }
