@@ -26,10 +26,9 @@ when
 
 then
     modify($facts) {
-        setPassingDirectness( PassingDirectness.DIRECT );
+        setPassingDirectness( PassingDirectness.DIRECT ),
+        addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.DIRECT, "the team's tactical fitness is low, so a simpler and more direct route is safer" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.DIRECT, "the team's tactical fitness is low, so a simpler and more direct route is safer" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] passingDirectness=DIRECT | reason=low tactical fitness" );
 
@@ -55,10 +54,9 @@ when
 
 then
     modify($facts) {
-        setPassingDirectness( PassingDirectness.DIRECT );
+        setPassingDirectness( PassingDirectness.DIRECT ),
+        addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.DIRECT, "the opponent presses aggressively and leaves space to attack quickly" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.DIRECT, "the opponent presses aggressively and leaves space to attack quickly" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] passingDirectness=DIRECT | reason=aggressive possession opponent" );
 
@@ -84,10 +82,9 @@ when
 
 then
     modify($facts) {
-        setPassingDirectness( PassingDirectness.DIRECT );
+        setPassingDirectness( PassingDirectness.DIRECT ),
+        addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.DIRECT, "there is space to counter and the selected mentality is more protective" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.DIRECT, "there is space to counter and the selected mentality is more protective" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] passingDirectness=DIRECT | reason=counter opportunity with defensive mentality" );
 
@@ -113,10 +110,9 @@ when
 
 then
     modify($facts) {
-        setPassingDirectness( PassingDirectness.DIRECT );
+        setPassingDirectness( PassingDirectness.DIRECT ),
+        addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.DIRECT, "there is space to counter and the selected mentality is more protective" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.DIRECT, "there is space to counter and the selected mentality is more protective" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] passingDirectness=DIRECT | reason=counter opportunity with cautious mentality" );
 
@@ -146,10 +142,9 @@ when
 
 then
     modify($facts) {
-        setPassingDirectness( PassingDirectness.SHORTER );
+        setPassingDirectness( PassingDirectness.SHORTER ),
+        addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.SHORTER, "the midfield is creative, the team is fit, and the mentality supports proactive possession" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.SHORTER, "the midfield is creative, the team is fit, and the mentality supports proactive possession" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] passingDirectness=SHORTER | reason=creative midfield and good fitness with positive mentality" );
 
@@ -179,10 +174,9 @@ when
 
 then
     modify($facts) {
-        setPassingDirectness( PassingDirectness.SHORTER );
+        setPassingDirectness( PassingDirectness.SHORTER ),
+        addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.SHORTER, "the midfield is creative, the team is fit, and the mentality supports proactive possession" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.SHORTER, "the midfield is creative, the team is fit, and the mentality supports proactive possession" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] passingDirectness=SHORTER | reason=creative midfield and good fitness with attacking mentality" );
 
@@ -208,10 +202,9 @@ when
 
 then
     modify($facts) {
-        setPassingDirectness( PassingDirectness.SHORTER );
+        setPassingDirectness( PassingDirectness.SHORTER ),
+        addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.SHORTER, "a passive opponent can be moved around through patient combinations" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.SHORTER, "a passive opponent can be moved around through patient combinations" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] passingDirectness=SHORTER | reason=creative midfield against passive opponent" );
 
@@ -228,10 +221,9 @@ when
 
 then
     modify($facts) {
-        setPassingDirectness( PassingDirectness.STANDARD );
+        setPassingDirectness( PassingDirectness.STANDARD ),
+        addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.STANDARD, "there is no strong reason to force a very short or very direct passing style" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.passing( PassingDirectness.STANDARD, "there is no strong reason to force a very short or very direct passing style" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] passingDirectness=STANDARD | reason=default" );
 

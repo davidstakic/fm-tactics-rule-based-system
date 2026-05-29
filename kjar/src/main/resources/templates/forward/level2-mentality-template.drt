@@ -35,16 +35,14 @@ then
     modify($existing) {
         setSelectedMentality(
             Mentality.@{mentality}
-        );
-    };
-
-    $existing.addExplanationStep(
-        TacticalExplanationFactory.mentality(
-            Mentality.@{mentality},
-            "@{description}"
+        ),
+        addExplanationStep(
+            TacticalExplanationFactory.mentality(
+                Mentality.@{mentality},
+                "@{description}"
+            )
         )
-    );
-    update($existing);
+    };
 
     System.out.println(
         "[FC:L2] selectedMentality=@{mentality}"

@@ -33,10 +33,9 @@ then
     modify($facts) {
         setTransitionAfterLossOfBall( 
         TransitionAfterLossOfBall.COUNTER_PRESS
-         );
+         ),
+        addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.COUNTER_PRESS, "the team is balanced, quick, and can react immediately after losing possession" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.COUNTER_PRESS, "the team is balanced, quick, and can react immediately after losing possession" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] transitionAfterLossOfBall=COUNTER_PRESS | reason=balanced mentality with fast team" );
 
@@ -61,10 +60,9 @@ then
     modify($facts) {
         setTransitionAfterLossOfBall( 
         TransitionAfterLossOfBall.COUNTER_PRESS
-         );
+         ),
+        addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.COUNTER_PRESS, "the attacking mentality is already paired with high pressing" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.COUNTER_PRESS, "the attacking mentality is already paired with high pressing" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] transitionAfterLossOfBall=COUNTER_PRESS | reason=attacking mentality with high press" );
 
@@ -89,10 +87,9 @@ then
     modify($facts) {
         setTransitionAfterLossOfBall( 
         TransitionAfterLossOfBall.COUNTER_PRESS
-         );
+         ),
+        addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.COUNTER_PRESS, "the very attacking mentality is already paired with high pressing" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.COUNTER_PRESS, "the very attacking mentality is already paired with high pressing" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] transitionAfterLossOfBall=COUNTER_PRESS | reason=very attacking mentality with high press" );
 
@@ -117,10 +114,9 @@ then
     modify($facts) {
         setTransitionAfterLossOfBall( 
         TransitionAfterLossOfBall.COUNTER_PRESS
-         );
+         ),
+        addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.COUNTER_PRESS, "the forwards are suited to pressing and the team is already pressing high" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.COUNTER_PRESS, "the forwards are suited to pressing and the team is already pressing high" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] transitionAfterLossOfBall=COUNTER_PRESS | reason=pressing attackers with high press" );
 
@@ -148,10 +144,9 @@ then
     modify($facts) {
         setTransitionAfterLossOfBall( 
         TransitionAfterLossOfBall.HOLD_SHAPE
-         );
+         ),
+        addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.HOLD_SHAPE, "the team can counter, but the mentality is protective, so structure matters" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.HOLD_SHAPE, "the team can counter, but the mentality is protective, so structure matters" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] transitionAfterLossOfBall=HOLD_SHAPE | reason=counter opportunity with defensive mentality" );
 
@@ -179,10 +174,9 @@ then
     modify($facts) {
         setTransitionAfterLossOfBall( 
         TransitionAfterLossOfBall.HOLD_SHAPE
-         );
+         ),
+        addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.HOLD_SHAPE, "the team can counter, but the mentality is protective, so structure matters" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.HOLD_SHAPE, "the team can counter, but the mentality is protective, so structure matters" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] transitionAfterLossOfBall=HOLD_SHAPE | reason=counter opportunity with cautious mentality" );
 
@@ -206,10 +200,9 @@ then
     modify($facts) {
         setTransitionAfterLossOfBall( 
         TransitionAfterLossOfBall.REGROUP
-         );
+         ),
+        addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.REGROUP, "the team's tactical fitness is low and a safer reset reduces chaos" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.REGROUP, "the team's tactical fitness is low and a safer reset reduces chaos" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] transitionAfterLossOfBall=REGROUP | reason=low tactical fitness" );
 
@@ -228,10 +221,9 @@ then
     modify($facts) {
         setTransitionAfterLossOfBall( 
         TransitionAfterLossOfBall.REGROUP
-         );
+         ),
+        addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.REGROUP, "there is no strong reason to counter-press, so regrouping is the safer default" ) )
     };
-    $facts.addExplanationStep( TacticalExplanationFactory.transition( TransitionAfterLossOfBall.REGROUP, "there is no strong reason to counter-press, so regrouping is the safer default" ) );
-    update($facts);
 
     System.out.println( "[FC:L3] transitionAfterLossOfBall=REGROUP | reason=default" );
 
